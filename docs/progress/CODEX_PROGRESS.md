@@ -22,7 +22,7 @@
 | 任务 | 状态 | 需求映射 | 前置 / Gate | PR / commit | 验证人 | 云端测试 | Windows 测试 | 阻塞 / 最新更新 |
 |---|---|---|---|---|---|---|---|---|
 | WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；外部审阅待完成；2026-10-14 |
-| WF-01 | in-progress | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | feat/wf-01-shell；PR 待创建 | Codex | CI 待运行 | NOT RUN：原生构建/GUI/重开待验证 | Node/Rust 锁文件、前端检查与 Windows CI；2026-10-14 |
+| WF-01 | in-progress | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；feat/wf-01-shell | Codex | [通用 CI PASS](https://github.com/dyorangeLOL/Lily-Toolbox/actions/runs/38582370110) | NOT RUN：原生构建/GUI/重开待验证 | Node/Rust 锁文件、前端检查与 Windows CI；2026-10-14 |
 | WF-02 | not-started | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
@@ -110,7 +110,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Whitespace check failed' }
 | pnpm install --frozen-lockfile / peers check | 本地 Windows | PASS | 冻结安装成功，peers check 无冲突 |
 | pnpm typecheck / lint / format:check / test / build | 本地 Windows | PASS | 10 项 Vitest 测试通过；typecheck/lint/format/build 通过；不计为 GUI 验收 |
 | cargo fmt --all -- --check | 隔离 Rust 1.99 | PASS | cargo fmt --all -- --check 返回 0 |
-| Cargo clippy/test/原生 build | Windows runner | NOT RUN | 本机无 MSVC；Windows CI 待执行，不伪称构建成功 |
+| Rust core clippy/test | Ubuntu CI | PASS | 通用 CI 38582370110；3 项 Rust 测试通过 |
+| Cargo workspace clippy/test/原生 build | Windows runner | FAIL → 待复测 | CI 38582369588 缺少必需 icon.ico；已补官方模板资源，后续步骤未执行 |
 | Windows smoke / 正常关闭重开 / repeated-launch 20 次 | Windows runner/本地 | NOT RUN | 待真实产物，报告来自渲染后 native IPC 与窗口观察 |
 | 冷启动/完整进程树私有内存/CPU、Profile、Portable | Windows | NOT RUN | WF-02 专属 SPIKE；不能用 repeated-launch 代替冷启动 |
 
