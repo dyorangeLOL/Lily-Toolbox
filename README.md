@@ -4,7 +4,7 @@ Windows 优先、本地优先的模块化个人生产力工作台：以一个入
 
 ## 当前状态
 
-WF-00 治理与工作流调整已经合并；WF-01 正在建立最小 Tauri/React/Rust Shell 与 CI。Shell 仅提供真实宿主健康检查，没有业务模块、设计系统或可发行安装/Portable 包。**未实现功能不作承诺**；检查状态见进度台账，源码或前端构建不等于 Windows 验收通过。
+WF-00 治理与工作流调整已经合并；WF-01 已建立最小 Tauri/React/Rust Shell 与 CI，并完成 Windows CI 及本机 Windows 11 运行复验，见[验收记录](docs/test-plan/WF-01-validation.md)。Shell 仅提供真实宿主健康检查，没有业务模块、设计系统或可发行安装/Portable 包。**未实现功能不作承诺**；检查状态见进度台账，源码或前端构建不等于 Windows 验收通过。
 
 ## V0.1 目标范围
 

@@ -1,0 +1,13 @@
+{
+  "source_commit": "06407bebeb3bf53d6073a5268b6424cfec088052",
+  "script_commit": "d792ea56d3e8b0f1bd17ebae0b72f72a9f4b84b3",
+  "cpu": [
+    {
+      "cores": 16,
+      "logical": 22,
+      "name": "Intel(R) Core(TM) Ultra 9 185H"
+    }
+  ],
+  "artifact_id": 11904841201,
+  "binary_sha256": "5EC55A6B0BE357CC2F0613DF113E7AC225BB937D84446B254069659BAD55FCE9"
+}
