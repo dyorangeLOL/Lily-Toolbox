@@ -1,0 +1,37 @@
+{
+  "name": "lily-toolbox",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.25.0",
+  "engines": {
+    "node": "24.19.0"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @toolbox/desktop dev",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint",
+    "format:check": "prettier --check apps/desktop/src apps/desktop/*.json apps/desktop/*.ts packages/shared-types",
+    "build": "pnpm --filter @toolbox/desktop build",
+    "desktop:dev": "pnpm --filter @toolbox/desktop tauri dev",
+    "desktop:build": "pnpm --filter @toolbox/desktop tauri build --no-bundle"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@tauri-apps/cli": "2.12.2",
+    "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "eslint": "10.12.0",
+    "globals": "17.13.0",
+    "jsdom": "30.1.2",
+    "prettier": "3.9.10",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.4"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "identifier": "main-local",
+  "description": "Only local main frontend can check host health and acknowledge rendering.",
+  "local": true,
+  "windows": ["main"],
+  "permissions": ["allow-health-check", "allow-frontend-ready"]
+}
