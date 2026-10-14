@@ -17,7 +17,7 @@
 
 | 任务 | 状态 | 需求映射 | 前置 / Gate | PR / commit | 验证人 | 云端测试 | Windows 测试 | 阻塞 / 最新更新 |
 |---|---|---|---|---|---|---|---|---|
-| WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR 分支](https://github.com/dyorangeLOL/Lily-Toolbox/compare/main...docs/wf-00-governance)；commit 见 PR | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；外部审阅待完成；2026-10-14 |
+| WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；外部审阅待完成；2026-10-14 |
 | WF-01 | not-started | APP-007；ADR-003/011/012 | WF-00 verified 与审查合并 | — | — | NOT RUN | NOT RUN | 未派发；2026-10-14 |
 | WF-02 | not-started | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
