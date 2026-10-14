@@ -110,6 +110,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Whitespace check failed' }
 | pnpm install --frozen-lockfile / peers check | 本地 Windows | PASS | 冻结安装成功，peers check 无冲突 |
 | pnpm typecheck / lint / format:check / test / build | 本地 Windows | PASS | 10 项 Vitest 测试通过；typecheck/lint/format/build 通过；不计为 GUI 验收 |
 | cargo fmt --all -- --check | 隔离 Rust 1.99 | PASS | cargo fmt --all -- --check 返回 0 |
+| 本地 cargo test --locked -p toolbox-core | Windows / 隔离 Rust | FAIL（环境） | 实际错误：link.exe not found；缺少 MSVC，不能在本机编译 |
 | Rust core clippy/test | Ubuntu CI | PASS | 通用 CI 38582370110；3 项 Rust 测试通过 |
 | Cargo workspace clippy/test/原生 build | Windows runner | FAIL → 待复测 | CI 38582369588 缺少必需 icon.ico；已补官方模板资源，后续步骤未执行 |
 | Windows smoke / 正常关闭重开 / repeated-launch 20 次 | Windows runner/本地 | NOT RUN | 待真实产物，报告来自渲染后 native IPC 与窗口观察 |

@@ -48,7 +48,7 @@ pnpm desktop:build
 ./tools/benchmarks/shell-baseline.ps1 -Executable ./target/release/toolbox-desktop.exe
 ```
 
-WF-01 的 build 暂不生成安装包（`--no-bundle`）。冒烟测试观察真实主窗口、已渲染前端调用 Rust 的回执和正常关闭/重开；20 次重复启动工具仅记录 repeated-launch P90，不等于冷启动或完整进程树内存/CPU指标。CI 的原生构建、smoke 与报告实际完成后才可计入对应验证。生产界面无 Mock 成功，测试替身明确标记在测试文件中。
+WF-01 的 build 暂不生成安装包（`--no-bundle`）。冒烟测试观察真实主窗口、已渲染前端调用 Rust 的回执和正常关闭/重开；20 次重复启动工具记录 repeated-launch P90 和早期空闲完整进程树私有内存样本，不等于冷启动或 60 秒空闲 CPU 验收。CI 的原生构建、smoke 与报告实际完成后才可计入对应验证。生产界面无 Mock 成功，测试替身明确标记在测试文件中。
 
 按用户授权顺序执行 WF-01 → WF-02 → WF-03，仍逐阶段验收与独立 PR；未通过 Gate 则先修复当前任务。WF-03.5 与后续功能没有在本次授权中执行。
 

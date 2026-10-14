@@ -29,10 +29,22 @@ try {
             if ($ack.pid -ne $process.Id -or $ack.health.runtime -ne 'tauri-rust' -or $ack.health.api_version -ne 1) {
                 throw 'Invalid native readiness acknowledgement'
             }
+            # One early-idle sample, not the full 60-second CPU/stability acceptance.
+            Start-Sleep -Milliseconds 500
+            $tree = @([int]$process.Id)
+            $snapshot = @(Get-CimInstance Win32_Process)
+            do {
+                $newIds = @($snapshot | Where-Object { $_.ParentProcessId -in $tree -and $_.ProcessId -notin $tree } | ForEach-Object { [int]$_.ProcessId })
+                $tree += $newIds
+            } while ($newIds.Count -gt 0)
+            $memory = @($tree | ForEach-Object {
+                $member = Get-Process -Id $_ -ErrorAction SilentlyContinue
+                if ($member) { @{ name = $member.ProcessName; private_bytes = $member.PrivateMemorySize64 } }
+            })
             if (-not $process.CloseMainWindow()) { throw 'WM_CLOSE was not accepted' }
             if (-not $process.WaitForExit(10000)) { throw 'Application failed to close normally' }
             if ($process.ExitCode -ne 0) { throw "Abnormal application exit: $($process.ExitCode)" }
-            $results += @{ run = $run; launch_ms = $launchMs; native = $ack; window_observed = $true; normal_close = $true }
+            $results += @{ run = $run; launch_ms = $launchMs; native = $ack; window_observed = $true; normal_close = $true; process_tree = $memory; private_bytes = ($memory | ForEach-Object { $_.private_bytes } | Measure-Object -Sum).Sum }
         } finally {
             if (-not $process.HasExited) { Stop-Process -Id $process.Id -ErrorAction SilentlyContinue }
         }
