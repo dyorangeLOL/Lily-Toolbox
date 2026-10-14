@@ -1,0 +1,60 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+use std::sync::{Mutex, OnceLock};
+use std::time::Instant;
+use tauri::{WebviewUrl, WebviewWindowBuilder};
+use toolbox_core::{AppError, HealthStatus};
+
+static STARTED: OnceLock<Instant> = OnceLock::new();
+
+#[derive(Default)]
+struct Readiness(Mutex<bool>);
+
+#[tauri::command]
+fn health_check() -> HealthStatus {
+    toolbox_core::health()
+}
+
+#[tauri::command]
+fn frontend_ready(state: tauri::State<'_, Readiness>) -> Result<(), AppError> {
+    let mut ready = state.0.lock().map_err(|_| AppError::diagnostic_failed())?;
+    if *ready {
+        return Ok(());
+    }
+    // Test-only destination comes from the launching process, never from webpage input.
+    if let Some(path) = std::env::var_os("TOOLBOX_SMOKE_REPORT") {
+        let report = serde_json::json!({
+            "health": toolbox_core::health(),
+            "frontend_ready_ms": STARTED.get().map(|time| time.elapsed().as_millis()),
+            "pid": std::process::id()
+        });
+        std::fs::write(path, report.to_string()).map_err(|_| AppError::diagnostic_failed())?;
+    }
+    *ready = true;
+    Ok(())
+}
+
+fn main() {
+    STARTED.get_or_init(Instant::now);
+    tauri::Builder::default()
+        .manage(Readiness::default())
+        .invoke_handler(tauri::generate_handler![health_check, frontend_ready])
+        .setup(|app| {
+            WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
+                .title("Toolbox — WF-01")
+                .inner_size(800.0, 600.0)
+                .on_navigation(|url| {
+                    let bundled =
+                        url.scheme() == "tauri" || url.host_str() == Some("tauri.localhost");
+                    let development = cfg!(debug_assertions)
+                        && url.scheme() == "http"
+                        && url.host_str() == Some("127.0.0.1")
+                        && url.port() == Some(1420);
+                    bundled || development
+                })
+                .build()?;
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("desktop runtime failed");
+}

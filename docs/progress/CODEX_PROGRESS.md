@@ -1,14 +1,18 @@
 # Codex 任务进度
 
-基线：[TOOLBOX_SPEC.md](../../TOOLBOX_SPEC.md) v1.0、[CODEX_WORKFLOW.md](../../CODEX_WORKFLOW.md) v1.0；规则：[AGENTS.md](../../AGENTS.md)；[待决事项](DECISIONS_PENDING.md)。
+基线：[TOOLBOX_SPEC.md](../../TOOLBOX_SPEC.md) v1.0、[CODEX_WORKFLOW.md](../../CODEX_WORKFLOW.md) v1.1；规则：[AGENTS.md](../../AGENTS.md)；[待决事项](DECISIONS_PENDING.md)。
 
 最新更新：2026-10-14（Asia/Shanghai）。状态词：not-started / in-progress / awaiting-windows-validation / verified / blocked / deferred。verified 仅指对应任务，不代表 V0.1 产品已完成、PR 已合并或所有者已批准。
 
-## 仓库审查与本次范围
+## 当前执行范围
+
+2026-10-14 用户授权按顺序执行 WF-01、WF-02、WF-03。WF-00 PR #1 和工作流 PR #2 已合并；本阶段是 WF-01，未进入 WF-02/03。WF-03.5 已补入台账但保持 not-started，不执行设计或后续业务功能。Windows/MSVC 编译与真实桌面证据由 CI/本地测试提供，不用前端构建替代。
+
+## WF-00 历史仓库审查
 
 - 基线 commit：[3ecce7f](https://github.com/dyorangeLOL/Lily-Toolbox/commit/3ecce7fa349f4f7393550ea914149e496ffd46ca)。实际树只有 CODEX_WORKFLOW.md 和 TOOLBOX_SPEC.md。
 - 不存在 AGENTS.md、README、源码、CI、lockfile、package.json 或 Cargo workspace；没有已有内容需要合并/覆盖。两份基线保持原样。
-- 当前任务仅 WF-00：四份治理文档。P0 业务功能没有实现；P1/P2 没有启动；SPIKE 没有执行；没有 UI、依赖或应用骨架。
+- WF-00 当时仅四份治理文档。P0 业务功能没有实现；P1/P2 没有启动；SPIKE 没有执行；没有 UI、依赖或应用骨架。
 - 需求关联：ADR-002/011/012/014；规范 §13–15。本次不新建或修改架构、命令/事件契约、数据库 Schema，也不决定浏览器宿主。
 
 ## 任务台账
@@ -17,10 +21,11 @@
 
 | 任务 | 状态 | 需求映射 | 前置 / Gate | PR / commit | 验证人 | 云端测试 | Windows 测试 | 阻塞 / 最新更新 |
 |---|---|---|---|---|---|---|---|---|
-| WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；外部审阅待完成；2026-10-14 |
-| WF-01 | not-started | APP-007；ADR-003/011/012 | WF-00 verified 与审查合并 | — | — | NOT RUN | NOT RUN | 未派发；2026-10-14 |
+| WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；PR 已整合；2026-10-14 |
+| WF-01 | verified | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；d792ea5 | Codex（实际检查/自审） | 通用 CI 38584099171 PASS | Windows CI 38584099478 PASS；本机 Win11 启动/重开/20次采样 PASS | 骨架已验收；冷启动/完整CPU/业务功能未验收；2026-10-14 |
 | WF-02 | not-started | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
+| WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
 | WF-04 | not-started | APP-001/002/003（部分） | WF-03 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-05 | not-started | APP-004/005/006/007；INT-001 | WF-04 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-06 | not-started | WEB-001/002/008/009 | Gate A + WF-03；宿主 ADR 批准 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
@@ -36,6 +41,8 @@
 | WF-16 | not-started | §15–16；AC-001…AC-015 | Gate C + 所有者审批；Gate D | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 
 ## WF-00 验证证据
+
+本节保留 WF-00 历史证据；下面的四文件检查代码仅适用于 PR #1 的提交 151378a，不能用于当前 WF-01 源码树。当前任务按其下方独立记录的命令验证。
 
 执行环境：本地 Windows PowerShell；不是 Codex Cloud 或 GitHub Actions。检查人：Codex。以下检查只验证治理文档，不验证应用功能。2026-10-14 已实际执行；输出见下方。
 
@@ -91,7 +98,25 @@ if ($LASTEXITCODE -ne 0) { throw 'Whitespace check failed' }
 "PASS: files=4; AGENTS lines=$agentLines; local links=$linkCount; WF rows=$($rows.Count); later tasks=not-started; scope=4; baselines=unchanged; whitespace=clean"
 ```
 
-检查针对当前暂存区相对基线的差异：提交前可先用 `git add -- AGENTS.md README.md docs/progress/CODEX_PROGRESS.md docs/progress/DECISIONS_PENDING.md`。提交后在本 PR 分支干净检出中也可直接运行；比较仍以固定基线为准。不要重置已有工作。
+历史检查针对 WF-00 暂存区相对基线的差异；仅在独立的 PR #1 提交检出中复现，不应在后续源码工作树运行，也不要重置已有工作。
+
+## WF-01 实际验证记录
+
+需求：APP-007（骨架部分）、ADR-003/011/012/014；实现路径：apps/desktop、crates/toolbox-core、packages/shared-types、CI、测试工具与文档。没有业务 API/SQLite/模块安装实现，没有 UI 视觉设计。
+
+| 检查 | 环境 | 状态 | 实际证据 / 原因 |
+|---|---|---|---|
+| 首轮 TypeScript 7 lint | 本地 Node 24 | FAIL → PASS（已修复复测） | typescript-eslint 明确不支持 TS7；改锁到兼容 TS6.0.3；复测 lint 与 peers check 通过 |
+| pnpm install --frozen-lockfile / peers check | 本地 Windows | PASS | 冻结安装成功，peers check 无冲突 |
+| pnpm typecheck / lint / format:check / test / build | 本地 Windows | PASS | 10 项 Vitest 测试通过；typecheck/lint/format/build 通过；不计为 GUI 验收 |
+| cargo fmt --all -- --check | 隔离 Rust 1.99 | PASS | cargo fmt --all -- --check 返回 0 |
+| 本地 cargo test --locked -p toolbox-core | Windows / 隔离 Rust | FAIL（环境） | 实际错误：link.exe not found；缺少 MSVC，不能在本机编译 |
+| Rust core clippy/test | Ubuntu CI | PASS | 通用 CI 38582370110；3 项 Rust 测试通过 |
+| Cargo workspace clippy/test/原生 build | Windows runner | PASS（复测） | 首轮缺 icon.ico 已修复；CI 38584099478 全步骤通过 |
+| Windows smoke / 正常关闭重开 / repeated-launch 20 次 | Windows runner/本地 Win11 | PASS | 2次正常关闭重开；20次重复启动，实测详见 WF-01-validation.md |
+| 冷启动/完整进程树私有内存/CPU、Profile、Portable | Windows | NOT RUN | WF-02 专属 SPIKE；不能用 repeated-launch 代替冷启动 |
+
+详见[WF-01 实际验收记录](../test-plan/WF-01-validation.md)。风险：本地仍缺 MSVC，原生编译经 Windows CI 完成并在本机运行复验；WF-01 只覆盖 APP-007 的骨架，单实例/恢复/设置不计为完成。WF-01 的骨架和真实 Windows 启动已验收后，才开始独立 WF-02。回滚本任务独立 PR，不改变规范和用户数据。
 
 ## 审查、影响与下一步
 

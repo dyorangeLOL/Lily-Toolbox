@@ -1,0 +1,13 @@
+{
+  "count": 20,
+  "memory_bytes": 33730662400,
+  "os": {
+    "name": "Microsoft Windows 11 家庭版 中文版",
+    "build": "26200",
+    "architecture": "64 位"
+  },
+  "process_tree_private_bytes_max": 220987392.0,
+  "classification": "repeated-launch plus early-idle process-tree private bytes; not cold boot or 60-second idle CPU",
+  "frontend_p90_ms": 799,
+  "launch_p90_ms": 905.7557
+}
