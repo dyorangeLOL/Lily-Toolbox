@@ -2,11 +2,11 @@
 
 基线：[TOOLBOX_SPEC.md](../../TOOLBOX_SPEC.md) v1.0、[CODEX_WORKFLOW.md](../../CODEX_WORKFLOW.md) v1.1；规则：[AGENTS.md](../../AGENTS.md)；[待决事项](DECISIONS_PENDING.md)。
 
-最新更新：2026-10-14（Asia/Shanghai）。状态词：not-started / in-progress / awaiting-windows-validation / verified / blocked / deferred。verified 仅指对应任务，不代表 V0.1 产品已完成、PR 已合并或所有者已批准。
+最新更新：2026-10-15（Asia/Shanghai）。状态词：not-started / in-progress / awaiting-windows-validation / verified / blocked / deferred。verified 仅指对应任务，不代表 V0.1 产品已完成、PR 已合并或所有者已批准。
 
 ## 当前执行范围
 
-2026-10-14 用户授权按顺序执行 WF-01、WF-02、WF-03。WF-00 PR #1 和工作流 PR #2 已合并；本阶段是 WF-01，未进入 WF-02/03。WF-03.5 已补入台账但保持 not-started，不执行设计或后续业务功能。Windows/MSVC 编译与真实桌面证据由 CI/本地测试提供，不用前端构建替代。
+2026-10-14 用户授权按顺序执行 WF-01、WF-02、WF-03。WF-00 PR #1 和工作流 PR #2 已合并；WF-01 已通过 Windows 验收并合并 PR #3；当前执行 WF-02，Gate A 未通过，WF-03 未开始。WF-03.5 已补入台账但保持 not-started，不执行设计或后续业务功能。Windows/MSVC 编译与真实桌面证据由 CI/本地测试提供，不用前端构建替代。
 
 ## WF-00 历史仓库审查
 
@@ -23,7 +23,7 @@
 |---|---|---|---|---|---|---|---|---|
 | WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；PR 已整合；2026-10-14 |
 | WF-01 | verified | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；d792ea5 | Codex（实际检查/自审） | 通用 CI 38584099171 PASS | Windows CI 38584099478 PASS；本机 Win11 启动/重开/20次采样 PASS | 骨架已验收；冷启动/完整CPU/业务功能未验收；2026-10-14 |
-| WF-02 | not-started | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
+| WF-02 | in-progress | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | 草稿 PR 待创建 | Codex | Node 夹具 3 测试 PASS；CI 待运行 | 新实验 NOT RUN，不能计为通过 | 独立 UDF 对照已编写；共享环境命名 Profile 尚待验证；2026-10-15 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
 | WF-04 | not-started | APP-001/002/003（部分） | WF-03 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |

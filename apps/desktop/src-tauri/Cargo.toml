@@ -4,6 +4,9 @@ version.workspace = true
 edition.workspace = true
 publish.workspace = true
 
+[features]
+spike-web = ["tauri/unstable"]
+
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
 
