@@ -6,6 +6,10 @@ use std::time::{Duration, Instant};
 use tauri::webview::{DownloadEvent, PageLoadEvent, WebviewBuilder};
 use tauri::{AppHandle, LogicalPosition, LogicalSize, Manager, Webview, WebviewUrl, Window};
 
+#[cfg(windows)]
+#[path = "profiles.rs"]
+mod profiles;
+
 fn test_root() -> Option<PathBuf> {
     std::env::var_os("TOOLBOX_PORTABLE_ROOT")
         .or_else(|| std::env::var_os("TOOLBOX_SPIKE_DATA_ROOT"))
@@ -223,6 +227,9 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
                 recreates += 1;
             }
         }
+        if window.webviews().len() != count + 1 {
+            return Err("CHILD_REGISTRY_LEAK".into());
+        }
         std::thread::sleep(Duration::from_millis(40));
     }
     if operations > 0 {
@@ -239,11 +246,20 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
     if count > 0 {
         tabs[0].view.show().map_err(|_| "FINAL_SHOW_FAILED")?;
     }
+    if operations > 0 {
+        for tab in tabs {
+            tab.view.close().map_err(|_| "FINAL_CLOSE_FAILED")?;
+        }
+        if window.webviews().len() != 1 {
+            return Err("CHILD_CLEANUP_LEAK".into());
+        }
+    }
     Ok(serde_json::json!({
         "status":"PASS", "tabs":count, "operations":operations,
         "switches":switches, "resizes":resizes, "navigations":navigations, "close_recreate":recreates,
         "page_loads":page_loads.load(Ordering::SeqCst), "download_verified":downloaded.load(Ordering::SeqCst),
         "one_window":app.windows().len()==1, "attached_webviews":window.webviews().len(),
+        "peak_attached_webviews":count+1, "closed_children": operations > 0,
         "profile_strategy":"separate UDF per workspace; shared UDF/named profiles NOT VERIFIED"
     }))
 }
@@ -252,9 +268,22 @@ pub fn maybe_start(app: AppHandle, window: Window) -> Result<(), std::io::Error>
     if std::env::var_os("TOOLBOX_SPIKE_URL").is_none() {
         return Ok(());
     }
-    std::thread::spawn(move || match execute(&app, &window) {
-        Ok(result) => report(result),
-        Err(code) => report(serde_json::json!({"status":"FAIL","code":code})),
+    std::thread::spawn(move || {
+        match if std::env::var_os("TOOLBOX_SPIKE_NAMED_PROFILES").is_some() {
+            #[cfg(windows)]
+            {
+                profiles::execute(&app, &window)
+            }
+            #[cfg(not(windows))]
+            {
+                Err("WINDOWS_REQUIRED".into())
+            }
+        } else {
+            execute(&app, &window)
+        } {
+            Ok(result) => report(result),
+            Err(code) => report(serde_json::json!({"status":"FAIL","code":code})),
+        }
     });
     Ok(())
 }

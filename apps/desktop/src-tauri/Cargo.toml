@@ -5,7 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [features]
-spike-web = ["tauri/unstable"]
+spike-web = ["tauri/unstable", "dep:wry", "dep:raw-window-handle"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -15,3 +15,8 @@ tauri = { version = "2", features = [] }
 toolbox-core = { path = "../../../crates/toolbox-core" }
 serde.workspace = true
 serde_json.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+# Reuse the exact Wry already selected by Tauri; no second rendering engine.
+wry = { version = "=0.57.0", optional = true, default-features = false, features = ["os-webview"] }
+raw-window-handle = { version = "0.6", optional = true }

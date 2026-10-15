@@ -21,7 +21,7 @@ while (-not (Test-Path -LiteralPath $serverReport) -and [DateTime]::UtcNow -lt $
 if (-not (Test-Path -LiteralPath $serverReport)) { if (-not $server.HasExited) { Stop-Process -Id $server.Id }; throw 'Fixture server failed to start' }
 $port = (Get-Content $serverReport -Raw | ConvertFrom-Json).port
 
-function Start-Spike([string]$DataRoot, [int]$Tabs, [int]$Operations, [string]$RunId, [string]$Name) {
+function Start-Spike([string]$DataRoot, [int]$Tabs, [int]$Operations, [string]$RunId, [string]$Name, [bool]$NamedProfiles = $true) {
     $ready = Join-Path $root ($Name + '-ready.json')
     $evidence = Join-Path $root ($Name + '-native.json')
     $launch = [Diagnostics.ProcessStartInfo]::new($binary)
@@ -33,6 +33,7 @@ function Start-Spike([string]$DataRoot, [int]$Tabs, [int]$Operations, [string]$R
     $launch.Environment['TOOLBOX_SPIKE_URL'] = "http://127.0.0.1:$port/page?run=$RunId"
     $launch.Environment['TOOLBOX_SPIKE_TABS'] = [string]$Tabs
     $launch.Environment['TOOLBOX_SPIKE_OPERATIONS'] = [string]$Operations
+    if ($NamedProfiles) { $launch.Environment['TOOLBOX_SPIKE_NAMED_PROFILES'] = '1' } else { $launch.Environment.Remove('TOOLBOX_SPIKE_NAMED_PROFILES') | Out-Null }
     $clock = [Diagnostics.Stopwatch]::StartNew()
     $process = [Diagnostics.Process]::Start($launch)
     try {
@@ -63,7 +64,7 @@ function Stop-Spike($Handle) {
     }
 }
 
-function Validate-Browser($Handle, [string]$RunId, [int]$Tabs, [string]$Mode, [string]$Name) {
+function Validate-Browser($Handle, [string]$RunId, [int]$Tabs, [string]$Mode, [string]$Name, [bool]$NamedProfiles = $true) {
     Start-Sleep -Milliseconds 300
     $events = Invoke-RestMethod "http://127.0.0.1:$port/events?run=$RunId"
     $file = Join-Path $root ($Name + '-events.json')
@@ -90,11 +91,18 @@ function Sample-Tree([int]$RootPid) {
 $results = @{}
 try {
     $id = [Guid]::NewGuid().ToString('N')
-    $stress = Start-Spike (Join-Path $root 'stress') 10 100 $id 'stress'
+    $stress = Start-Spike (Join-Path $root 'stress') 10 100 $id 'stress' $false
     try {
-        if ($stress.native.operations -ne 100 -or $stress.native.tabs -ne 10 -or -not $stress.native.one_window -or $stress.native.attached_webviews -ne 11 -or -not $stress.native.download_verified) { throw 'Incomplete real child WebView/download exercise' }
+        if ($stress.native.operations -ne 100 -or $stress.native.tabs -ne 10 -or -not $stress.native.one_window -or $stress.native.peak_attached_webviews -ne 11 -or $stress.native.attached_webviews -ne 1 -or -not $stress.native.closed_children -or -not $stress.native.download_verified) { throw 'Incomplete real child WebView/download exercise' }
         $results.stress = @{native=$stress.native; browser=(Validate-Browser $stress $id 10 'fresh' 'stress')}
     } finally { Stop-Spike $stress }
+
+    $id = [Guid]::NewGuid().ToString('N')
+    $named = Start-Spike (Join-Path $root 'named-profiles') 10 100 $id 'named-profiles'
+    try {
+        if (-not $named.native.shared_environment -or $named.native.native_children -ne 10 -or $named.native.remaining_children -ne 0 -or -not $named.native.closed_children -or -not $named.native.download_verified) { throw 'Shared environment/named Profile lifecycle incomplete' }
+        $results.named_profiles = @{native=$named.native; browser=(Validate-Browser $named $id 10 'fresh' 'named-profiles'); tree=(Sample-Tree $named.process.Id)}
+    } finally { Stop-Spike $named }
 
     foreach ($trial in @(@{name='portable-a-first'; dir='portable-a'; mode='fresh'},@{name='portable-a-reopen'; dir='portable-a'; mode='persistent'},@{name='portable-b-first'; dir='portable-b'; mode='fresh'})) {
         $id = [Guid]::NewGuid().ToString('N')
@@ -102,7 +110,9 @@ try {
         $handle = Start-Spike $rootPath 5 0 $id $trial.name
         try {
             $results[$trial.name] = Validate-Browser $handle $id 5 $trial.mode $trial.name
-            if (-not (Test-Path (Join-Path $rootPath 'data/webview/shell')) -or -not (Test-Path (Join-Path $rootPath 'data/webview/A')) -or -not (Test-Path (Join-Path $rootPath 'data/webview/B'))) { throw 'Data silently fell back outside Portable root' }
+            if (-not (Test-Path (Join-Path $rootPath 'data/webview/shell')) ) { throw 'Data silently fell back outside Portable root' }
+            $profiles = @(Get-ChildItem -LiteralPath (Join-Path $rootPath 'data/webview/shell') -Directory -Recurse | Where-Object Name -in @('Workspace_A','Workspace_B'))
+            if ($profiles.Count -ne 2) { throw 'Named Profile folders missing under shared UDF' }
         } finally { Stop-Spike $handle }
     }
 
