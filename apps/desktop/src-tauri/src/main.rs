@@ -70,6 +70,10 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             #[cfg(feature = "spike-web")]
             if window.is_err() {
                 spike::report_webview_failure();
+                // An expected fixture/prerequisite failure must not reach Tauri's
+                // setup panic handler (which can block on Windows crash dialogs).
+                // Only enabled for the explicit experiment; no database exists.
+                std::process::exit(2);
             }
             let window = window?;
             window.show()?;
