@@ -139,6 +139,23 @@ try {
         $results.readonly=@{result='PASS'; observed_error=$failure.code; exit_code=$process.ExitCode; fixture_acl_restored=$true}
     } finally { Set-Acl -LiteralPath $readOnly -AclObject $originalAcl }
 
+    # Actual loader failure via process-local supported WebView2 override. Never
+    # uninstall or modify the machine's Runtime to simulate this prerequisite.
+    $emptyRuntime = Join-Path $root 'empty-runtime'
+    New-Item -ItemType Directory -Path $emptyRuntime | Out-Null
+    $report = Join-Path $root 'missing-runtime-native.json'
+    $launch = [Diagnostics.ProcessStartInfo]::new($binary)
+    $launch.UseShellExecute=$false
+    $launch.WindowStyle=[Diagnostics.ProcessWindowStyle]::Hidden
+    $launch.Environment['WEBVIEW2_BROWSER_EXECUTABLE_FOLDER']=$emptyRuntime
+    $launch.Environment['TOOLBOX_PORTABLE_ROOT']=(Join-Path $root 'missing-runtime-data')
+    $launch.Environment['TOOLBOX_SPIKE_REPORT']=$report
+    $process=[Diagnostics.Process]::Start($launch)
+    if (-not $process.WaitForExit(20000)) { Stop-Process -Id $process.Id; throw 'Missing Runtime startup did not fail promptly' }
+    $failure=Get-Content $report -Raw | ConvertFrom-Json
+    if ($process.ExitCode -eq 0 -or $failure.code -ne 'WEBVIEW_INITIALIZATION_FAILED') { throw 'Invalid Runtime override unexpectedly succeeded' }
+    $results.missing_runtime=@{result='PASS'; mechanism='process-local WebView2 loader override to empty fixture folder'; observed_error=$failure.code; exit_code=$process.ExitCode; system_runtime_modified=$false}
+
     if (-not $SkipPerformance) {
         $samples=@()
         foreach ($mode in @('process-cold-fresh-UDF','warm-reopen-same-UDF')) {
@@ -180,6 +197,11 @@ try {
     $results.status='PASS'
     $results | ConvertTo-Json -Depth 12 | Set-Content (Join-Path $root 'gate-a-evidence.json') -Encoding utf8
     Write-Output 'PASS: real 10-child/100-operation stress, cookie isolation, download, Portable persistence/readonly, requested resource trials. Review evidence before Gate A.'
+} catch {
+    $results.status='FAIL'
+    $results.error='Experiment failed; inspect native reports and execution console'
+    $results | ConvertTo-Json -Depth 12 | Set-Content (Join-Path $root 'gate-a-evidence.json') -Encoding utf8
+    throw
 } finally {
     if (-not $server.HasExited) { Stop-Process -Id $server.Id -ErrorAction SilentlyContinue }
 }

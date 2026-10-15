@@ -25,6 +25,13 @@ fn report(value: serde_json::Value) {
     }
 }
 
+pub fn report_webview_failure() {
+    report(
+        serde_json::json!({"status":"FAIL","code":"WEBVIEW_INITIALIZATION_FAILED",
+        "message":"WebView2 could not initialize; verify Runtime availability and data directory permissions"}),
+    );
+}
+
 pub fn prepare_data_directory() -> Result<Option<PathBuf>, std::io::Error> {
     let Some(root) = test_root() else {
         return Ok(None);
@@ -78,7 +85,7 @@ fn create_tab(
     page_loads: Arc<AtomicUsize>,
     downloaded: Arc<AtomicBool>,
 ) -> Result<Tab, String> {
-    let group = if slot % 2 == 0 { "A" } else { "B" };
+    let group = if slot.is_multiple_of(2) { "A" } else { "B" };
     let directory = root.join("data").join("webview").join(group);
     std::fs::create_dir_all(&directory).map_err(|_| "PROFILE_DIRECTORY_FAILED")?;
     let label = format!("spike-tab-{slot}");
@@ -190,7 +197,11 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
                 switches += 1;
             }
             1 => {
-                let width = if (step / 4) % 2 == 0 { 880.0 } else { 800.0 };
+                let width = if (step / 4).is_multiple_of(2) {
+                    880.0
+                } else {
+                    800.0
+                };
                 window
                     .set_size(LogicalSize::new(width, 640.0))
                     .map_err(|_| "WINDOW_RESIZE_FAILED")?;

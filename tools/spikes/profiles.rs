@@ -75,7 +75,7 @@ pub fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, St
     let downloaded = Arc::new(AtomicBool::new(false));
     let create = |slot: usize, step: usize| -> Result<Arc<AtomicBool>, String> {
         let mut url = base.clone();
-        let group = if slot % 2 == 0 { "A" } else { "B" };
+        let group = if slot.is_multiple_of(2) { "A" } else { "B" };
         url.query_pairs_mut()
             .append_pair("slot", &slot.to_string())
             .append_pair("profile", group)
@@ -165,7 +165,11 @@ pub fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, St
                 })
             })?,
             1 => {
-                let width = if (step / 4) % 2 == 0 { 880.0 } else { 800.0 };
+                let width = if (step / 4).is_multiple_of(2) {
+                    880.0
+                } else {
+                    800.0
+                };
                 window
                     .set_size(tauri::LogicalSize::new(width, 640.0))
                     .map_err(|_| "WINDOW_RESIZE_FAILED")?;

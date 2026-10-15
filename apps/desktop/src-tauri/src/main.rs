@@ -66,7 +66,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 builder
             };
-            let window = builder.build()?;
+            let window = builder.build();
+            #[cfg(feature = "spike-web")]
+            if window.is_err() {
+                spike::report_webview_failure();
+            }
+            let window = window?;
             window.show()?;
             #[cfg(feature = "spike-web")]
             spike::maybe_start(app.handle().clone(), window.as_ref().window())?;
