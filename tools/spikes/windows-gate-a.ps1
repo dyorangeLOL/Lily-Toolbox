@@ -112,6 +112,7 @@ try {
         if ($stress.native.operations -ne 100 -or $stress.native.tabs -ne 10 -or -not $stress.native.one_window -or $stress.native.peak_attached_webviews -ne 11 -or $stress.native.attached_webviews -ne 1 -or -not $stress.native.closed_children -or -not $stress.native.download_verified) { throw 'Incomplete real child WebView/download exercise' }
         $results.stress = @{native=$stress.native; browser=(Validate-Browser $stress $id 10 'fresh' 'stress')}
         if ($results.stress.browser.observed_documents -lt 60) { throw 'Not all stress navigations/recreated views reached the real fixture server' }
+        if (@($stress.native.unique_tabs_by_operation).Count -ne 4 -or @($stress.native.unique_tabs_by_operation | Where-Object {$_ -ne 10}).Count -gt 0) { throw 'Each operation must exercise all ten Tauri child views' }
     } finally { Stop-Spike $stress }
 
     $id = [Guid]::NewGuid().ToString('N')
@@ -120,6 +121,7 @@ try {
         if ($named.native.operations -ne 100 -or -not $named.native.one_window -or -not $named.native.shared_environment -or $named.native.native_children -ne 10 -or $named.native.remaining_children -ne 0 -or -not $named.native.closed_children -or -not $named.native.download_verified) { throw 'Shared environment/named Profile lifecycle incomplete' }
         $results.named_profiles = @{native=$named.native; browser=(Validate-Browser $named $id 10 'fresh' 'named-profiles'); tree=(Sample-Tree $named.process.Id)}
         if ($results.named_profiles.browser.observed_documents -lt 60) { throw 'Not all named Profile navigations/recreated views reached the real fixture server' }
+        if (@($named.native.unique_tabs_by_operation).Count -ne 4 -or @($named.native.unique_tabs_by_operation | Where-Object {$_ -ne 10}).Count -gt 0) { throw 'Each operation must exercise all ten named Profile views' }
     } finally { Stop-Spike $named }
 
     foreach ($trial in @(@{name='portable-a-first'; dir='portable-a'; mode='fresh'},@{name='portable-a-reopen'; dir='portable-a'; mode='persistent'},@{name='portable-b-first'; dir='portable b 中文'; mode='fresh'})) {

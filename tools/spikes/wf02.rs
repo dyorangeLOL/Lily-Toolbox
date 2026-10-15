@@ -215,8 +215,12 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
     let mut resizes = 0;
     let mut navigations = 0;
     let mut recreates = 0;
+    let mut exercised: [std::collections::BTreeSet<usize>; 4] =
+        std::array::from_fn(|_| Default::default());
     for step in 1..=operations {
-        let slot = (step - 1) % count;
+        // Rotate each operation independently through all ten tabs, rather than
+        // accidentally restricting switches to even slots and closes to odd ones.
+        let slot = ((step - 1) / 4 + (step - 1) % 4) % count;
         match (step - 1) % 4 {
             0 => {
                 for tab in &tabs {
@@ -268,10 +272,14 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
                 recreates += 1;
             }
         }
+        exercised[(step - 1) % 4].insert(slot);
         if window.webviews().len() != count + 1 {
             return Err("CHILD_REGISTRY_LEAK".into());
         }
         std::thread::sleep(Duration::from_millis(40));
+    }
+    if operations > 0 && exercised.iter().any(|slots| slots.len() != count) {
+        return Err("INCOMPLETE_TAB_COVERAGE".into());
     }
     if operations > 0 {
         tabs[0]
@@ -301,6 +309,7 @@ fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, String
         "page_loads":page_loads.load(Ordering::SeqCst), "download_verified":downloaded.load(Ordering::SeqCst),
         "one_window":app.windows().len()==1, "attached_webviews":window.webviews().len(),
         "peak_attached_webviews":count+1, "closed_children": operations > 0,
+        "unique_tabs_by_operation":exercised.map(|slots| slots.len()),
         "profile_strategy":"separate UDF per workspace; shared UDF/named profiles NOT VERIFIED"
     }))
 }

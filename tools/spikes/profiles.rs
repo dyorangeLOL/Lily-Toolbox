@@ -151,8 +151,10 @@ pub fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, St
     for slot in 0..count {
         flags.push(create(slot, 0)?);
     }
+    let mut exercised: [std::collections::BTreeSet<usize>; 4] =
+        std::array::from_fn(|_| Default::default());
     for step in 1..=operations {
-        let slot = (step - 1) % count;
+        let slot = ((step - 1) / 4 + (step - 1) % 4) % count;
         match (step - 1) % 4 {
             0 => on_ui(&main, move |_| {
                 VIEWS.with_borrow(|views| {
@@ -212,7 +214,11 @@ pub fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, St
                 flags[slot] = create(slot, step)?;
             }
         }
+        exercised[(step - 1) % 4].insert(slot);
         std::thread::sleep(Duration::from_millis(40));
+    }
+    if operations > 0 && exercised.iter().any(|slots| slots.len() != count) {
+        return Err("INCOMPLETE_TAB_COVERAGE".into());
     }
     if operations > 0 {
         on_ui(&main, move |_| {
@@ -255,6 +261,7 @@ pub fn execute(app: &AppHandle, window: &Window) -> Result<serde_json::Value, St
         "page_loads":loads.load(Ordering::SeqCst), "download_verified":downloaded.load(Ordering::SeqCst),
         "one_window":app.windows().len()==1, "attached_webviews":window.webviews().len(), "native_children":alive,
         "remaining_children":remaining, "closed_children":operations>0,
+        "unique_tabs_by_operation":exercised.map(|slots| slots.len()),
         "shared_environment":true, "environment_source":"same main PlatformWebview.environment() COM object passed to every Wry child",
         "profile_strategy":"shared Shell UDF + Workspace_A / Workspace_B named Profiles", "udf_relative":"data/webview/shell"}),
     )
