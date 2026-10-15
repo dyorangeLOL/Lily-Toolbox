@@ -52,17 +52,24 @@ if (!document.cookie.split(';').some(part => part.trim().startsWith('wf02_profil
 export function validateEvents(events, tabs, { fresh = false, persistent = false } = {}) {
   assert.equal(new Set(events.map(event => event.slot)).size, tabs, "Not every real view reached the server");
   const first = new Map();
+  const slots = new Set();
   for (const event of events) {
+    assert.ok(Number.isInteger(event.slot) && event.slot >= 0 && event.slot < tabs);
+    assert.equal(event.profile, event.slot % 2 === 0 ? "A" : "B");
     assert.equal(event.nativeDenied, true, "Remote fixture received native access");
     assert.ok(event.width > 0 && event.height > 0, "No real viewport dimensions");
     assert.ok(event.after.split(";").some(part => part.trim() === `wf02_profile=${event.profile}`), "Cross-profile cookie leakage");
+    if (first.has(event.profile) && !slots.has(event.slot)) {
+      assert.ok(event.before.includes(`wf02_profile=${event.profile}`), "Same-profile views did not share cookies");
+    }
     if (!first.has(event.profile)) first.set(event.profile, event);
+    slots.add(event.slot);
   }
   for (const event of first.values()) {
     if (fresh) assert.ok(!event.before.includes("wf02_profile="), "Fresh root reused another root's cookie");
     if (persistent) assert.ok(event.before.includes(`wf02_profile=${event.profile}`), "Cookie did not persist across restart");
   }
-  return { observed_views: tabs, observed_documents: events.length, cookie_isolation: true, remote_native_denied: true };
+  return { observed_views: tabs, observed_documents: events.length, cookie_isolation: true, same_profile_sharing: tabs >= 3, remote_native_denied: true };
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {

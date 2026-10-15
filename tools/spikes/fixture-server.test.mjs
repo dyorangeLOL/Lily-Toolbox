@@ -21,3 +21,10 @@ test("verifier separates fresh-root and persistence requirements", () => {
   assert.throws(() => validateEvents([event], 1, { persistent: true }));
   assert.throws(() => validateEvents([{ ...event, before: "wf02_profile=A" }], 1, { fresh: true }));
 });
+
+test("verifier requires sharing between two views in the same profile", () => {
+  const sameProfileViews = [event, { ...event, slot: 1, profile: "B", after: "wf02_profile=B" }, { ...event, slot: 2 }];
+  assert.throws(() => validateEvents(sameProfileViews, 3, { fresh: true }));
+  sameProfileViews[2].before = "wf02_profile=A";
+  assert.doesNotThrow(() => validateEvents(sameProfileViews, 3, { fresh: true }));
+});
