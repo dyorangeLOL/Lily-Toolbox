@@ -15,3 +15,5 @@ Tauri 2.12.3 的高层 `WebviewBuilder` 没有命名 Profile 配置。其当前�
 风险：高层 Tauri 未管理原生子控件；后续生产适配必须明确关闭/resize/DPI/焦点/进程异常处理，不能直接将实验当成浏览器模块。若共享方案失败，应按工作流验证独立 Browser Host，再决定架构。当前未选择最终宿主。
 
 参考：[Microsoft 多 Profile](https://learn.microsoft.com/en-us/microsoft-edge/webview2/concepts/multi-profile-support)、[Wry Windows 扩展源码](https://github.com/tauri-apps/wry/blob/wry-v0.57.0/src/lib.rs)。接口存在不是 Windows 实测通过证明。
+
+实测补充：当前 Runtime 将逻辑 Profile Workspace_A/B 映射为 UDF 下 EBWebView/WV2Profile_workspace_a/b；测试按实测映射检查，不能假设目录名等于逻辑名称。生产实现应通过 WebView2 Profile API 查询路径，不把此磁盘布局当成稳定契约。

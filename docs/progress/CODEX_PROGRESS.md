@@ -23,7 +23,7 @@
 |---|---|---|---|---|---|---|---|---|
 | WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；PR 已整合；2026-10-14 |
 | WF-01 | verified | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；d792ea5 | Codex（实际检查/自审） | 通用 CI 38584099171 PASS | Windows CI 38584099478 PASS；本机 Win11 启动/重开/20次采样 PASS | 骨架已验收；冷启动/完整CPU/业务功能未验收；2026-10-14 |
-| WF-02 | in-progress | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | 草稿 PR 待创建 | Codex | Node 夹具 3 测试 PASS；CI 待运行 | 新实验 NOT RUN，不能计为通过 | 独立 UDF 对照已编写；共享环境命名 Profile 尚待验证；2026-10-15 |
+| WF-02 | in-progress | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | [草稿 PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4) | Codex | Node 夹具 4 测试 PASS；通用 CI 38679471547 PASS | 原生编译/feature clippy PASS；10控件/100操作、命名Profile预验证 PASS；完整验收待复测 | 修复实验构建漏 custom-protocol；等待完整主页面+Portable+性能复测；2026-10-15 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
 | WF-04 | not-started | APP-001/002/003（部分） | WF-03 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
@@ -124,3 +124,15 @@ if ($LASTEXITCODE -ne 0) { throw 'Whitespace check failed' }
 - 权限、数据迁移、运行包体与启动/内存：本次仅文档，没有运行时变化；性能测试 NOT RUN，不宣称达标。
 - 回滚：关闭未合并 PR；若已合并，revert 本次治理文档提交，不修改需求基线或用户原件。
 - 下一可派发任务：WF-01，仅在 WF-00 验收、审查及合并后另行授权；本次结束于 WF-00。
+
+## WF-02 实际执行记录（未完成 Gate A）
+
+- 2026-10-15 用户恢复网络后继续；范围仍为 WEB-010/007、SPIKE-PKG-01/PERF-01，不执行 WF-03 或 WF-03.5。
+- 本地 Node 夹具 4 项 PASS；pnpm typecheck/lint/test（10项）/build PASS；Rust fmt 和 PowerShell 语法检查 PASS。
+- 本地 Rust clippy 实际 FAIL（环境）：缺少 link.exe；不记为通过。Windows CI 的普通/实验 feature clippy、workspace test 与 release 编译实际 PASS。
+- Windows CI 38678935134 FAIL：上传锁文件内容不完整；改为逐文件 blob 上传并逐一比对本地 Git SHA，已修复。
+- Windows CI 38679471619 的原生实验阶段 FAIL：普通 Shell 启动通过，直接 cargo 实验产物遗漏 custom-protocol，主页面未加载。实验 feature 加入 custom-protocol，等待完整复测。
+- e3b7f5a 产物在本机的独立原生预验证：真实共享环境两命名 Profile、10 控件、100 操作、下载、最终关闭控件 PASS；实际 HTTP 60 文档（A/B 各30），隔离/同 Profile 共享/native 拒绝 PASS。此预验证不包含修复后的主页面就绪，不视作整个 Gate A 通过。
+- 新的完整流程还需实际验证：主页面就绪、Portable 两目录/重开/只读、Runtime 空目录真实加载失败、20 次冷/热启动、0/1/5 标签完整进程树及60秒CPU。当前这些项目 NOT RUN。
+- [宿主 ADR-017](../adr/ADR-017-browser-host.md) 为 proposed；最终方案待完整证据及所有者阶段确认。WF-03 未开始。
+- Windows CI 38714550789：通用/原生与实验编译、主页面就绪、两组100操作/下载、同域Cookie检查 PASS；随后文件夹断言 FAIL。实测目录为 EBWebView/WV2Profile_workspace_a 和 WV2Profile_workspace_b，已修正测试断言；完整本机流程正在运行，尚未计通过。

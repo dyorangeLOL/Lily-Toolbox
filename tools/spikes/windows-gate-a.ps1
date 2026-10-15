@@ -57,11 +57,21 @@ function Start-Spike([string]$DataRoot, [int]$Tabs, [int]$Operations, [string]$R
 }
 
 function Stop-Spike($Handle) {
+    $tree = Sample-Tree $Handle.process.Id
     $Handle.process.Refresh()
     if (-not $Handle.process.CloseMainWindow() -or -not $Handle.process.WaitForExit(10000) -or $Handle.process.ExitCode -ne 0) {
         if (-not $Handle.process.HasExited) { Stop-Process -Id $Handle.process.Id }
         throw 'Spike did not close normally'
     }
+    $limit = [DateTime]::UtcNow.AddSeconds(10)
+    do {
+        $survivors = @($tree.members | Where-Object {
+            $current = Get-Process -Id $_.pid -ErrorAction SilentlyContinue
+            $current -and $current.StartTime.ToUniversalTime().Ticks -eq $_.started_ticks
+        })
+        if ($survivors.Count -gt 0) { Start-Sleep -Milliseconds 100 }
+    } while ($survivors.Count -gt 0 -and [DateTime]::UtcNow -lt $limit)
+    if ($survivors.Count -gt 0) { throw 'Owned WebView process survived normal host shutdown' }
 }
 
 function Validate-Browser($Handle, [string]$RunId, [int]$Tabs, [string]$Mode, [string]$Name, [bool]$NamedProfiles = $true) {
@@ -83,7 +93,13 @@ function Sample-Tree([int]$RootPid) {
     } while ($found.Count -gt 0)
     $members = @($ids | ForEach-Object {
         $member = Get-Process -Id $_ -ErrorAction SilentlyContinue
-        if ($member) { @{pid=$member.Id; name=$member.ProcessName; private_bytes=$member.PrivateMemorySize64; cpu_seconds=$member.TotalProcessorTime.TotalSeconds} }
+        if ($member) {
+            $version = $null
+            if ($member.ProcessName -eq 'msedgewebview2') {
+                try { $version=$member.MainModule.FileVersionInfo.ProductVersion } catch { $version='unavailable' }
+            }
+            @{pid=$member.Id; name=$member.ProcessName; started_ticks=$member.StartTime.ToUniversalTime().Ticks; runtime_version=$version; private_bytes=$member.PrivateMemorySize64; cpu_seconds=$member.TotalProcessorTime.TotalSeconds}
+        }
     })
     return @{private_bytes=($members | ForEach-Object {$_.private_bytes} | Measure-Object -Sum).Sum; cpu_seconds=($members | ForEach-Object {$_.cpu_seconds} | Measure-Object -Sum).Sum; members=$members}
 }
@@ -95,23 +111,25 @@ try {
     try {
         if ($stress.native.operations -ne 100 -or $stress.native.tabs -ne 10 -or -not $stress.native.one_window -or $stress.native.peak_attached_webviews -ne 11 -or $stress.native.attached_webviews -ne 1 -or -not $stress.native.closed_children -or -not $stress.native.download_verified) { throw 'Incomplete real child WebView/download exercise' }
         $results.stress = @{native=$stress.native; browser=(Validate-Browser $stress $id 10 'fresh' 'stress')}
+        if ($results.stress.browser.observed_documents -lt 60) { throw 'Not all stress navigations/recreated views reached the real fixture server' }
     } finally { Stop-Spike $stress }
 
     $id = [Guid]::NewGuid().ToString('N')
     $named = Start-Spike (Join-Path $root 'named-profiles') 10 100 $id 'named-profiles'
     try {
-        if (-not $named.native.shared_environment -or $named.native.native_children -ne 10 -or $named.native.remaining_children -ne 0 -or -not $named.native.closed_children -or -not $named.native.download_verified) { throw 'Shared environment/named Profile lifecycle incomplete' }
+        if ($named.native.operations -ne 100 -or -not $named.native.one_window -or -not $named.native.shared_environment -or $named.native.native_children -ne 10 -or $named.native.remaining_children -ne 0 -or -not $named.native.closed_children -or -not $named.native.download_verified) { throw 'Shared environment/named Profile lifecycle incomplete' }
         $results.named_profiles = @{native=$named.native; browser=(Validate-Browser $named $id 10 'fresh' 'named-profiles'); tree=(Sample-Tree $named.process.Id)}
+        if ($results.named_profiles.browser.observed_documents -lt 60) { throw 'Not all named Profile navigations/recreated views reached the real fixture server' }
     } finally { Stop-Spike $named }
 
-    foreach ($trial in @(@{name='portable-a-first'; dir='portable-a'; mode='fresh'},@{name='portable-a-reopen'; dir='portable-a'; mode='persistent'},@{name='portable-b-first'; dir='portable-b'; mode='fresh'})) {
+    foreach ($trial in @(@{name='portable-a-first'; dir='portable-a'; mode='fresh'},@{name='portable-a-reopen'; dir='portable-a'; mode='persistent'},@{name='portable-b-first'; dir='portable b 中文'; mode='fresh'})) {
         $id = [Guid]::NewGuid().ToString('N')
         $rootPath = Join-Path $root $trial.dir
         $handle = Start-Spike $rootPath 5 0 $id $trial.name
         try {
             $results[$trial.name] = Validate-Browser $handle $id 5 $trial.mode $trial.name
             if (-not (Test-Path (Join-Path $rootPath 'data/webview/shell')) ) { throw 'Data silently fell back outside Portable root' }
-            $profiles = @(Get-ChildItem -LiteralPath (Join-Path $rootPath 'data/webview/shell') -Directory -Recurse | Where-Object Name -in @('Workspace_A','Workspace_B'))
+            $profiles = @(Get-ChildItem -LiteralPath (Join-Path $rootPath 'data/webview/shell') -Directory -Recurse | Where-Object Name -in @('WV2Profile_workspace_a','WV2Profile_workspace_b'))
             if ($profiles.Count -ne 2) { throw 'Named Profile folders missing under shared UDF' }
         } finally { Stop-Spike $handle }
     }
@@ -126,7 +144,7 @@ try {
         $rule = [Security.AccessControl.FileSystemAccessRule]::new($identity,'Write','ContainerInherit,ObjectInherit','None','Deny')
         $acl.AddAccessRule($rule)
         Set-Acl -LiteralPath $readOnly -AclObject $acl
-        $report = Join-Path $root 'readonly-result.json'
+        $report = Join-Path $root 'readonly-native.json'
         $launch = [Diagnostics.ProcessStartInfo]::new($binary)
         $launch.UseShellExecute=$false
         $launch.WindowStyle=[Diagnostics.ProcessWindowStyle]::Hidden
@@ -193,7 +211,7 @@ try {
     $os=Get-CimInstance Win32_OperatingSystem
     $cpu=Get-CimInstance Win32_Processor
     $computer=Get-CimInstance Win32_ComputerSystem
-    $results.environment=@{os=$os.Caption; build=$os.BuildNumber; memory_bytes=$computer.TotalPhysicalMemory; cpu=@($cpu | ForEach-Object {$_.Name})}
+    $results.environment=@{os=$os.Caption; build=$os.BuildNumber; memory_bytes=$computer.TotalPhysicalMemory; cpu=@($cpu | ForEach-Object {$_.Name}); logical_processors=$computer.NumberOfLogicalProcessors; webview2_versions=@($results.named_profiles.tree.members | ForEach-Object {$_.runtime_version} | Where-Object {$_} | Sort-Object -Unique)}
     $results.status='PASS'
     $results | ConvertTo-Json -Depth 12 | Set-Content (Join-Path $root 'gate-a-evidence.json') -Encoding utf8
     Write-Output 'PASS: real 10-child/100-operation stress, cookie isolation, download, Portable persistence/readonly, requested resource trials. Review evidence before Gate A.'
