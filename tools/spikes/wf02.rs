@@ -280,6 +280,20 @@ pub fn maybe_start(app: AppHandle, window: Window) -> Result<(), std::io::Error>
         return Ok(());
     }
     std::thread::spawn(move || {
+        // Establish the real local frontend/IPC readiness before child creation.
+        // Avoid measuring an obscured Shell or racing its first rendered frames.
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            let ready = app.state::<crate::Readiness>();
+            if ready.0.lock().is_ok_and(|ready| *ready) {
+                break;
+            }
+            if Instant::now() > deadline {
+                report(serde_json::json!({"status":"FAIL","code":"SHELL_READINESS_TIMEOUT"}));
+                return;
+            }
+            std::thread::sleep(Duration::from_millis(25));
+        }
         match if std::env::var_os("TOOLBOX_SPIKE_NAMED_PROFILES").is_some() {
             #[cfg(windows)]
             {
