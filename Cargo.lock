@@ -3476,6 +3476,7 @@ dependencies = [
  "tauri",
  "tauri-build",
  "toolbox-core",
+ "webview2-com",
  "wry",
 ]
 

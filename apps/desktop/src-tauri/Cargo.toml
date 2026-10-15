@@ -5,7 +5,7 @@ edition.workspace = true
 publish.workspace = true
 
 [features]
-spike-web = ["tauri/unstable", "tauri/custom-protocol", "dep:wry", "dep:raw-window-handle"]
+spike-web = ["tauri/unstable", "tauri/custom-protocol", "dep:wry", "dep:raw-window-handle", "dep:webview2-com"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -20,3 +20,4 @@ serde_json.workspace = true
 # Reuse the exact Wry already selected by Tauri; no second rendering engine.
 wry = { version = "=0.57.0", optional = true, default-features = false, features = ["os-webview"] }
 raw-window-handle = { version = "0.6", optional = true }
+webview2-com = { version = "=0.39.1", optional = true }

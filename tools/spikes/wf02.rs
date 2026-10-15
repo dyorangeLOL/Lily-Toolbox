@@ -32,7 +32,37 @@ pub fn report_webview_failure() {
     );
 }
 
+#[cfg(windows)]
+fn check_runtime() -> Result<(), std::io::Error> {
+    use webview2_com::CoTaskMemPWSTR;
+    use webview2_com::Microsoft::Web::WebView2::Win32::GetAvailableCoreWebView2BrowserVersionString;
+    // Query the actual loader before entering the framework's environment wait
+    // loop. Explicitly forward the supported process-local runtime override.
+    let folder = std::env::var("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER").unwrap_or_default();
+    let folder = CoTaskMemPWSTR::from(folder.as_str());
+    let mut version = Default::default();
+    // SAFETY: folder is a live NUL-terminated allocation; version is an out
+    // pointer owned by the loader and immediately wrapped for CoTaskMemFree.
+    let result = unsafe {
+        GetAvailableCoreWebView2BrowserVersionString(*folder.as_ref().as_pcwstr(), &mut version)
+    };
+    let version = CoTaskMemPWSTR::from(version);
+    if result.is_err() || version.to_string().is_empty() {
+        report(
+            serde_json::json!({"status":"FAIL","code":"WEBVIEW_RUNTIME_UNAVAILABLE",
+            "message":"WebView2 Runtime unavailable; install Evergreen or configure a valid Runtime folder"}),
+        );
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::NotFound,
+            "WebView2 Runtime unavailable",
+        ));
+    }
+    Ok(())
+}
+
 pub fn prepare_data_directory() -> Result<Option<PathBuf>, std::io::Error> {
+    #[cfg(windows)]
+    check_runtime()?;
     let Some(root) = test_root() else {
         return Ok(None);
     };

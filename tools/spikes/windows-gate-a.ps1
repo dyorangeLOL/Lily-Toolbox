@@ -171,7 +171,7 @@ try {
     $process=[Diagnostics.Process]::Start($launch)
     if (-not $process.WaitForExit(20000)) { Stop-Process -Id $process.Id; throw 'Missing Runtime startup did not fail promptly' }
     $failure=Get-Content $report -Raw | ConvertFrom-Json
-    if ($process.ExitCode -eq 0 -or $failure.code -ne 'WEBVIEW_INITIALIZATION_FAILED') { throw 'Invalid Runtime override unexpectedly succeeded' }
+    if ($process.ExitCode -eq 0 -or $failure.code -ne 'WEBVIEW_RUNTIME_UNAVAILABLE') { throw 'Invalid Runtime override unexpectedly succeeded' }
     $results.missing_runtime=@{result='PASS'; mechanism='process-local WebView2 loader override to empty fixture folder'; observed_error=$failure.code; exit_code=$process.ExitCode; system_runtime_modified=$false}
 
     if (-not $SkipPerformance) {
