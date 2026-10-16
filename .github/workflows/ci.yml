@@ -19,6 +19,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
       - run: pnpm test
+      - run: node --test tools/spikes/fixture-server.test.mjs
       - run: pnpm build
       - uses: dtolnay/rust-toolchain@1.99.0
         with:

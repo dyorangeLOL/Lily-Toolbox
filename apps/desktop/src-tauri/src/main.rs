@@ -7,6 +7,11 @@ use toolbox_core::{AppError, HealthStatus};
 
 static STARTED: OnceLock<Instant> = OnceLock::new();
 
+// Experiments are compiled only by an explicit feature, never the normal Shell build.
+#[cfg(feature = "spike-web")]
+#[path = "../../../../tools/spikes/wf02.rs"]
+mod spike;
+
 #[derive(Default)]
 struct Readiness(Mutex<bool>);
 
@@ -34,27 +39,55 @@ fn frontend_ready(state: tauri::State<'_, Readiness>) -> Result<(), AppError> {
     Ok(())
 }
 
-fn main() {
+fn run() -> Result<(), Box<dyn std::error::Error>> {
     STARTED.get_or_init(Instant::now);
+    #[cfg(feature = "spike-web")]
+    let test_data = spike::prepare_data_directory()?;
     tauri::Builder::default()
         .manage(Readiness::default())
         .invoke_handler(tauri::generate_handler![health_check, frontend_ready])
-        .setup(|app| {
-            WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
-                .title("Toolbox — WF-01")
-                .inner_size(800.0, 600.0)
-                .on_navigation(|url| {
-                    let bundled =
-                        url.scheme() == "tauri" || url.host_str() == Some("tauri.localhost");
-                    let development = cfg!(debug_assertions)
-                        && url.scheme() == "http"
-                        && url.host_str() == Some("127.0.0.1")
-                        && url.port() == Some(1420);
-                    bundled || development
-                })
-                .build()?;
+        .setup(move |app| {
+            let builder =
+                WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
+                    .title("Toolbox — WF-01")
+                    .inner_size(800.0, 600.0)
+                    .on_navigation(|url| {
+                        let bundled =
+                            url.scheme() == "tauri" || url.host_str() == Some("tauri.localhost");
+                        let development = cfg!(debug_assertions)
+                            && url.scheme() == "http"
+                            && url.host_str() == Some("127.0.0.1")
+                            && url.port() == Some(1420);
+                        bundled || development
+                    });
+            #[cfg(feature = "spike-web")]
+            let builder = if let Some(path) = &test_data {
+                builder.data_directory(path.clone())
+            } else {
+                builder
+            };
+            let window = builder.build();
+            #[cfg(feature = "spike-web")]
+            if window.is_err() {
+                spike::report_webview_failure();
+                // An expected fixture/prerequisite failure must not reach Tauri's
+                // setup panic handler (which can block on Windows crash dialogs).
+                // Only enabled for the explicit experiment; no database exists.
+                std::process::exit(2);
+            }
+            let window = window?;
+            window.show()?;
+            #[cfg(feature = "spike-web")]
+            spike::maybe_start(app.handle().clone(), window.as_ref().window())?;
             Ok(())
         })
-        .run(tauri::generate_context!())
-        .expect("desktop runtime failed");
+        .run(tauri::generate_context!())?;
+    Ok(())
+}
+
+fn main() {
+    if run().is_err() {
+        eprintln!("Toolbox startup failed; check platform prerequisites or test report");
+        std::process::exit(2);
+    }
 }
