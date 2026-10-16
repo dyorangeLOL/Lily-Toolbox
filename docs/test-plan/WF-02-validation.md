@@ -1,6 +1,6 @@
 # WF-02 实际验收记录
 
-日期：2026-10-15。执行/自审：Codex。需求：WEB-010、WEB-007、SPIKE-PKG-01/PERF-01；独立 [PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4)。Gate A 仍等待所有者审阅 ADR-017；未进入 WF-03、WF-03.5 或后续功能。
+日期：2026-10-15。执行/自审：Codex。需求：WEB-010、WEB-007、SPIKE-PKG-01/PERF-01；独立 [PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4)。实验时Gate A等待所有者审阅；2026-10-16所有者明确确认ADR-017方案，Gate A pass。该实验未实现WF-03、WF-03.5或后续功能。
 
 ## 实际执行
 
@@ -51,7 +51,7 @@ Codex 自审已对照 WF-02 四项实验、权限、数据目录、取消/退出
 
 100次操作只证明该有界试验未发现控件注册项增长和退出残留，不证明无限时长内存无泄漏。Runtime缺失测试通过只表示预期失败被捕获并有诊断，不表示友好安装流程已完成。最终版本冷/热启动复测达标；保留初轮热启动超标158.7ms的数据，不把两轮差异归因单一改动；需要保持同一口径回归。
 
-最终宿主建议见 [ADR-017](../adr/ADR-017-browser-host.md)。本次没有替所有者批准 Gate A；通过阶段确认后才继续 WF-03。
+最终宿主建议见 [ADR-017](../adr/ADR-017-browser-host.md)。Codex未代替所有者批准Gate A；2026-10-16所有者明确确认方案并授权继续WF-03。原始JSON的待审状态保留为实验时快照。
 
 
 

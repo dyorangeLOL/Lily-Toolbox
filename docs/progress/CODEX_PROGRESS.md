@@ -6,7 +6,7 @@
 
 ## 当前执行范围
 
-2026-10-14 用户授权按顺序执行 WF-01、WF-02、WF-03。WF-00 PR #1 和工作流 PR #2 已合并；WF-01 已通过 Windows 验收并合并 PR #3；当前执行 WF-02，Gate A 未通过，WF-03 未开始。WF-03.5 已补入台账但保持 not-started，不执行设计或后续业务功能。Windows/MSVC 编译与真实桌面证据由 CI/本地测试提供，不用前端构建替代。
+2026-10-14 用户授权按顺序执行 WF-01、WF-02、WF-03。WF-00 PR #1 和工作流 PR #2 已合并；WF-01 已通过 Windows 验收并合并 PR #3；WF-02已验收，2026-10-16所有者确认ADR-017方案，Gate A pass；PR #4合并后进入WF-03。WF-03.5 已补入台账但保持 not-started，不执行设计或后续业务功能。Windows/MSVC 编译与真实桌面证据由 CI/本地测试提供，不用前端构建替代。
 
 ## WF-00 历史仓库审查
 
@@ -23,7 +23,7 @@
 |---|---|---|---|---|---|---|---|---|
 | WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；PR 已整合；2026-10-14 |
 | WF-01 | verified | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；d792ea5 | Codex（实际检查/自审） | 通用 CI 38584099171 PASS | Windows CI 38584099478 PASS；本机 Win11 启动/重开/20次采样 PASS | 骨架已验收；冷启动/完整CPU/业务功能未验收；2026-10-14 |
-| WF-02 | in-progress | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | [PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4)；d4ca638；ADR-017 | Codex（实际执行/自审） | 通用CI 38720390893、Windows CI 38720390888 PASS | 最终本机完整实验 PASS；20冷/20热/3资源组已记录；所述口径预算PASS | Gate A 待所有者确认，未记 verified；2026-10-15 |
+| WF-02 | verified | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | [PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4)；d4ca638；ADR-017 | Codex（实际执行/自审） | 通用CI 38720390893、Windows CI 38720390888 PASS | 最终本机完整实验 PASS；20冷/20热/3资源组已记录；所述口径预算PASS | 2026-10-16所有者确认方案，Gate A pass；Windows证据/自审齐全 |
 | WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
 | WF-04 | not-started | APP-001/002/003（部分） | WF-03 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
@@ -143,4 +143,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Whitespace check failed' }
 
 最终20次新进程/新UDF launcher P90=907.4532ms，20次warm P90=791.3158ms；无标签完整进程树190,373,888 bytes，空闲CPU0.01639%；0/1/5页CPU均测满60秒且PID集合稳定。此口径预算PASS，未清OS文件缓存。初轮warm 2158.7017ms FAIL的数据与来源保留为initial JSON；没有把差异归因于单项改动，无阈值变更。
 
-[完整验收记录](../test-plan/WF-02-validation.md)、[最终基线](../performance/wf02-local-baseline.json)、[来源](../performance/wf02-provenance.json)、[宿主建议](../adr/ADR-017-browser-host.md)。长期泄漏/60分钟业务稳定性、Win10、安装器、真实站点兼容等NOT RUN。自审PASS不代替所有者阶段确认；Gate A待审，WF-03保持not-started，不执行WF-03.5。
+[完整验收记录](../test-plan/WF-02-validation.md)、[最终基线](../performance/wf02-local-baseline.json)、[来源](../performance/wf02-provenance.json)、[宿主建议](../adr/ADR-017-browser-host.md)。长期泄漏/60分钟业务稳定性、Win10、安装器、真实站点兼容等NOT RUN。自审PASS不代替所有者阶段确认；2026-10-16所有者已明确确认方案，Gate A pass，WF-03待PR #4合并后开始；不执行WF-03.5。
+
+### 2026-10-16 Gate A 所有者确认
+
+所有者明确答复「确认方案，继续 WF-03」，批准ADR-017的同窗口Tauri Shell + Wry共享环境/命名Profile方案；保持现有性能目标及所有NOT RUN限制。WF-02 verified，Gate A pass。原始JSON中的AWAITING_OWNER_REVIEW是运行当时的状态快照，保留不重写。最后文档提交CI单独核实后合并PR #4，再执行WF-03。
