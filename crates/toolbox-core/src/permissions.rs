@@ -49,18 +49,30 @@ impl Database {
         let scope = canonical
             .to_str()
             .ok_or_else(|| AppError::new("INVALID_DATA"))?;
-        self.connection.execute("INSERT INTO permission_grants(id,subject_type,subject_id,capability,resource_scope,grant_type) VALUES(?1,'module',?2,?3,?4,'directory')",params![id,m.id,c,scope]).map_err(storage_error)?;
-        Ok(())
+        let tx = self
+            .connection
+            .unchecked_transaction()
+            .map_err(storage_error)?;
+        tx.execute("INSERT INTO permission_grants(id,subject_type,subject_id,capability,resource_scope,grant_type) VALUES(?1,'module',?2,?3,?4,'directory')",params![id,m.id,c,scope]).map_err(storage_error)?;
+        self.audit("toolbox.modules", id, "permission.grant", "success")?;
+        tx.commit().map_err(storage_error)
     }
 
     pub fn revoke_grant(&self, id: &str) -> Result<(), AppError> {
-        self.connection
-            .execute(
-                "UPDATE permission_grants SET revoked_at=unixepoch() WHERE id=?1",
-                [id],
-            )
+        if !crate::contracts::valid_id(id) {
+            return Err(AppError::new("INVALID_REQUEST"));
+        }
+        let tx = self
+            .connection
+            .unchecked_transaction()
             .map_err(storage_error)?;
-        Ok(())
+        tx.execute(
+            "UPDATE permission_grants SET revoked_at=unixepoch() WHERE id=?1",
+            [id],
+        )
+        .map_err(storage_error)?;
+        self.audit("toolbox.modules", id, "permission.revoke", "success")?;
+        tx.commit().map_err(storage_error)
     }
 
     // Re-read live grants on every call; revocation is not cached.

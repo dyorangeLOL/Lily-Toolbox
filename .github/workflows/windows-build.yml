@@ -25,7 +25,7 @@ jobs:
       - run: pnpm build
       - run: cargo fmt --all -- --check
       - run: cargo clippy --locked --workspace --all-targets -- -D warnings
-      - run: cargo clippy --locked --workspace --all-targets --features toolbox-desktop/spike-web -- -D warnings
+      - run: cargo clippy --locked --workspace --all-targets --features toolbox-desktop/spike-web,toolbox-desktop/core-validation -- -D warnings
       - run: cargo test --locked --workspace
       - run: pnpm desktop:build
       - name: Real WebView2 frontend / IPC / close / reopen
@@ -34,18 +34,33 @@ jobs:
       - name: Record repeated-launch startup samples
         shell: pwsh
         run: ./tools/benchmarks/shell-baseline.ps1 -Executable ./target/release/toolbox-desktop.exe
-      - name: Compile explicit WF-02 experiment
+      - name: Preserve normal binary and compile standalone core probe
+        shell: pwsh
         run: |
-          cargo build --release --locked -p toolbox-desktop --features spike-web
+          New-Item -ItemType Directory -Force .artifacts/wf03-bin | Out-Null
+          Copy-Item -LiteralPath target/release/toolbox-desktop.exe -Destination .artifacts/wf03-bin/toolbox-desktop.exe
+          cargo build --release --locked -p toolbox-core --example wf03_probe
+      - name: Compile explicit WF-02 / WF-03 validation features
+        run: |
+          cargo build --release --locked -p toolbox-desktop --features spike-web,core-validation
       - name: Real child WebView / shared-environment Profiles / Portable experiment
         shell: pwsh
         run: ./tools/spikes/windows-gate-a.ps1 -Executable ./target/release/toolbox-desktop.exe -OutputDirectory .artifacts/wf02-control -SkipPerformance
+      - name: Real core SQLite / readonly / local JS IPC and reopen
+        shell: pwsh
+        run: ./tools/dev-scripts/wf03-windows.ps1 -ProbeExecutable ./target/release/examples/wf03_probe.exe -DesktopExecutable ./target/release/toolbox-desktop.exe
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: wf02-windows-x64
+          name: wf03-windows-x64
           path: |
             target/release/toolbox-desktop.exe
+            target/release/examples/wf03_probe.exe
+            .artifacts/wf03-bin/toolbox-desktop.exe
+            .artifacts/wf03-windows/summary.json
+            .artifacts/wf03-windows/core.json
+            .artifacts/wf03-windows/readonly.json
+            .artifacts/wf03-windows/ipc-*.json
             .artifacts/windows-smoke/
             .artifacts/shell-baseline/
             .artifacts/wf02-control/*-native.json

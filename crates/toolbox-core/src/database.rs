@@ -161,12 +161,12 @@ pub fn migrate(connection: &mut Connection, migrations: &[Migration]) -> Result<
         rows.collect::<rusqlite::Result<_>>()
             .map_err(|_| AppError::new("SCHEMA_MISMATCH"))?
     };
-    for (i, (version, checksum)) in applied.iter().enumerate() {
+    for (i, (version, recorded_checksum)) in applied.iter().enumerate() {
         let m = migrations
             .get(i)
             .filter(|m| m.version == *version)
             .ok_or_else(|| AppError::new("SCHEMA_MISMATCH"))?;
-        if checksum(m.sql) != *checksum {
+        if checksum(m.sql) != *recorded_checksum {
             return Err(AppError::new("SCHEMA_MISMATCH"));
         }
     }
