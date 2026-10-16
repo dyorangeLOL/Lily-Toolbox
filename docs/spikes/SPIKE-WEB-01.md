@@ -1,6 +1,6 @@
 # SPIKE-WEB-01 — 单窗口真实子 WebView
 
-需求：WEB-010；WF-02。状态：in-progress，Windows 实验待执行，Gate A 未通过。
+需求：WEB-010；WF-02。2026-10-15 Windows 11 实验 PASS；最终 Gate A 宿主确认待所有者审阅。
 
 实验入口 `tools/spikes/windows-gate-a.ps1`，源码 `tools/spikes/wf02.rs`。仅 `spike-web` feature 编译，普通 Shell 不加载实验。受控 HTTP 夹具位于 `fixture-server.mjs`，不是模拟浏览器。
 
@@ -16,6 +16,8 @@ Tauri 2.12.3 `unstable` 子 WebView：单窗口先创建 10 个真实控件；�
 
 输出目录必须不存在，避免将旧 Cookie 当成全新目录结果。原生报告和 HTTP 事件分别记录；只有二者均成功才视为执行通过。窗口创建/IPC/控件事件不能以 Node 单元测试代替。
 
-已执行：夹具 HTTP 与验证器测试本地 4 项 PASS；首次草稿通用 CI 38678690052 PASS（当时 3 项夹具测试）。Windows 原生构建、100 次操作、下载、控件回收：NOT RUN，等待 PR #4 的 Windows 构建产物。连续长时间内存泄漏、真实网站兼容性、输入法/无障碍/多屏 DPI：NOT RUN，100 次实验不能证明这些能力。
+实际结果：本地夹具 4 项 PASS；通用 CI 38720390893、Windows CI 38720390888 PASS。本机使用同一提交 d4ca638 的最终原生产物和脚本完整重跑，退出 0。Tauri 对照和共享环境 Wry 方案各创建 10 控件、完成 100 操作和实际下载，各有 60 个真实 HTTP 文档回报；切换/缩放/导航/关闭重建四种操作的实际覆盖数组均为 [10,10,10,10]。最终 Tauri 注册项回到 1，Wry 容器回到 0，宿主正常关闭后其进程树在 10 秒内退出。
+
+这是有界生命周期检查，不是长期内存泄漏证明。长期泄漏、真实网站兼容性、输入法/无障碍/多屏 DPI：NOT RUN。完整证据与失败修复记录见 [WF-02 验收记录](../test-plan/WF-02-validation.md) 和 [原始聚合数据](../performance/wf02-local-baseline.json)。
 
 资料：[Tauri 子 WebView API](https://v2.tauri.app/reference/javascript/api/namespacewebview/)。

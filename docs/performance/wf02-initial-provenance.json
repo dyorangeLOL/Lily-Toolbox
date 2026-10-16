@@ -1,0 +1,21 @@
+{
+  "artifact_zip_sha256": "21eba94b9a8b81692265f6b873786c009b607225905d78730a7432303a7bc1a4",
+  "verifier": "Codex; actual local Windows execution and self-review",
+  "harness_source_commit": "90a6916868f681641d5258303d1f24d77e156b7f",
+  "command": "./tools/spikes/windows-gate-a.ps1 -Executable <verified artifact>/target/release/toolbox-desktop.exe -OutputDirectory <new test output directory>",
+  "executable_sha256": "a6f8535306841b3754504c79f6b0c25c9fbd273d02711689a4f757c45081aced",
+  "binary_source_commit": "9790435343a16446634b95b91ea6d266a8b596e7",
+  "executable_bytes": 8531456,
+  "notes": [
+    "Artifact SHA verified before extraction",
+    "Binary-source CI failed only on old Profile folder assertion after real native stress/cookies passed",
+    "Harness fixes assertions to actual disk mapping and adds shutdown verification, Chinese/space paths and Runtime version capture",
+    "No Rust/frontend changes between binary source and harness source; full local run exit 0",
+    "Execution success is not NFR success or owner Gate A approval",
+    "Warm launcher P90 exceeds 2s target; no threshold relaxed",
+    "No private UDF, machine/user paths, command lines or credentials published"
+  ],
+  "binary_workflow_run": 38714550789,
+  "date": "2026-10-15",
+  "artifact_id": 11961814353
+}

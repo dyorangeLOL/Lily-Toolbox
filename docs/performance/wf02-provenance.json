@@ -1,0 +1,22 @@
+{
+  "executable_bytes": 8543744,
+  "binary_workflow_run": 38720390888,
+  "executable_sha256": "95a725621dfb3dfebde439d019754accd69d48621b9a435a333511e5755c0ab0",
+  "notes": [
+    "ZIP and executable SHA verified; exact final binary and harness tested together",
+    "Windows CI 38720390888 PASS; full local run .artifacts/wf02-local-full-02 exited 0 without SkipPerformance",
+    "Both stress strategies report unique coverage [10,10,10,10]",
+    "Runtime preflight uses real SDK query with process override; negative trial exit 2",
+    "New-process/fresh-UDF and warm launcher P90 meet budgets in this run; OS-cache cold NOT RUN",
+    "Initial slower run and original provenance preserved separately; no causal speedup claim",
+    "Owner Gate A confirmation still pending; no thresholds changed",
+    "No private UDF, user paths, command lines or credentials published"
+  ],
+  "artifact_zip_sha256": "f01b6a6fb0e240d0f4fee1b8e87925d7a9161c398e4ac755f955286863b291ac",
+  "date": "2026-10-15",
+  "artifact_id": 11966705870,
+  "harness_source_commit": "d4ca63839683dee5fba8cd3c5f2c429217f808fc",
+  "binary_source_commit": "d4ca63839683dee5fba8cd3c5f2c429217f808fc",
+  "verifier": "Codex; actual local Windows execution and self-review",
+  "command": "./tools/spikes/windows-gate-a.ps1 -Executable <verified artifact>/target/release/toolbox-desktop.exe -OutputDirectory <new test output directory>"
+}

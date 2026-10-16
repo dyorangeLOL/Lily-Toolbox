@@ -1,0 +1,716 @@
+{
+  "performance": {
+    "startup_samples": [
+      {
+        "frontend_ready_ms": 2249,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 189153280.0,
+        "run": 0,
+        "launcher_ms": 2595.9806
+      },
+      {
+        "frontend_ready_ms": 2325,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 217464832.0,
+        "run": 1,
+        "launcher_ms": 2715.786
+      },
+      {
+        "frontend_ready_ms": 2385,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 186679296.0,
+        "run": 2,
+        "launcher_ms": 2714.3915
+      },
+      {
+        "frontend_ready_ms": 1755,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187957248.0,
+        "run": 3,
+        "launcher_ms": 2041.6752
+      },
+      {
+        "frontend_ready_ms": 1761,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187596800.0,
+        "run": 4,
+        "launcher_ms": 2044.9818
+      },
+      {
+        "frontend_ready_ms": 1763,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 186658816.0,
+        "run": 5,
+        "launcher_ms": 2049.5587
+      },
+      {
+        "frontend_ready_ms": 1802,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 186650624.0,
+        "run": 6,
+        "launcher_ms": 2083.0603
+      },
+      {
+        "frontend_ready_ms": 1757,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 188854272.0,
+        "run": 7,
+        "launcher_ms": 1992.907
+      },
+      {
+        "frontend_ready_ms": 1660,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187645952.0,
+        "run": 8,
+        "launcher_ms": 1910.2066
+      },
+      {
+        "frontend_ready_ms": 1676,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 188235776.0,
+        "run": 9,
+        "launcher_ms": 1962.9627
+      },
+      {
+        "frontend_ready_ms": 1771,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 189661184.0,
+        "run": 10,
+        "launcher_ms": 2068.2244
+      },
+      {
+        "frontend_ready_ms": 1674,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 190828544.0,
+        "run": 11,
+        "launcher_ms": 1939.3386
+      },
+      {
+        "frontend_ready_ms": 1712,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187346944.0,
+        "run": 12,
+        "launcher_ms": 1960.9681
+      },
+      {
+        "frontend_ready_ms": 1768,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 190799872.0,
+        "run": 13,
+        "launcher_ms": 2037.9469
+      },
+      {
+        "frontend_ready_ms": 1815,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187305984.0,
+        "run": 14,
+        "launcher_ms": 2053.1678
+      },
+      {
+        "frontend_ready_ms": 1844,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187281408.0,
+        "run": 15,
+        "launcher_ms": 2080.7069
+      },
+      {
+        "frontend_ready_ms": 1733,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187199488.0,
+        "run": 16,
+        "launcher_ms": 1948.1281
+      },
+      {
+        "frontend_ready_ms": 1736,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187633664.0,
+        "run": 17,
+        "launcher_ms": 1989.5709
+      },
+      {
+        "frontend_ready_ms": 1851,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187514880.0,
+        "run": 18,
+        "launcher_ms": 2150.554
+      },
+      {
+        "frontend_ready_ms": 1884,
+        "mode": "process-cold-fresh-UDF",
+        "private_bytes": 187092992.0,
+        "run": 19,
+        "launcher_ms": 2161.5771
+      },
+      {
+        "frontend_ready_ms": 1691,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186355712.0,
+        "run": 0,
+        "launcher_ms": 2026.638
+      },
+      {
+        "frontend_ready_ms": 1805,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187211776.0,
+        "run": 1,
+        "launcher_ms": 2038.2361
+      },
+      {
+        "frontend_ready_ms": 1647,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186552320.0,
+        "run": 2,
+        "launcher_ms": 1883.0105
+      },
+      {
+        "frontend_ready_ms": 1870,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 189313024.0,
+        "run": 3,
+        "launcher_ms": 2173.8904
+      },
+      {
+        "frontend_ready_ms": 1703,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 190414848.0,
+        "run": 4,
+        "launcher_ms": 1949.0216
+      },
+      {
+        "frontend_ready_ms": 1809,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186875904.0,
+        "run": 5,
+        "launcher_ms": 2057.7263
+      },
+      {
+        "frontend_ready_ms": 1621,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187658240.0,
+        "run": 6,
+        "launcher_ms": 1945.9782
+      },
+      {
+        "frontend_ready_ms": 1665,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 189464576.0,
+        "run": 7,
+        "launcher_ms": 1925.7534
+      },
+      {
+        "frontend_ready_ms": 1638,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186961920.0,
+        "run": 8,
+        "launcher_ms": 1967.4886
+      },
+      {
+        "frontend_ready_ms": 1686,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186212352.0,
+        "run": 9,
+        "launcher_ms": 1970.6161
+      },
+      {
+        "frontend_ready_ms": 1621,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 193228800.0,
+        "run": 10,
+        "launcher_ms": 1841.3307
+      },
+      {
+        "frontend_ready_ms": 1553,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187269120.0,
+        "run": 11,
+        "launcher_ms": 1821.663
+      },
+      {
+        "frontend_ready_ms": 1616,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187011072.0,
+        "run": 12,
+        "launcher_ms": 1833.9691
+      },
+      {
+        "frontend_ready_ms": 1658,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187068416.0,
+        "run": 13,
+        "launcher_ms": 1960.92
+      },
+      {
+        "frontend_ready_ms": 1636,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 189816832.0,
+        "run": 14,
+        "launcher_ms": 1972.1511
+      },
+      {
+        "frontend_ready_ms": 1689,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187142144.0,
+        "run": 15,
+        "launcher_ms": 1989.9395
+      },
+      {
+        "frontend_ready_ms": 1764,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 185909248.0,
+        "run": 16,
+        "launcher_ms": 2029.4465
+      },
+      {
+        "frontend_ready_ms": 1835,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186085376.0,
+        "run": 17,
+        "launcher_ms": 2158.7017
+      },
+      {
+        "frontend_ready_ms": 1620,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 186089472.0,
+        "run": 18,
+        "launcher_ms": 1912.2948
+      },
+      {
+        "frontend_ready_ms": 1888,
+        "mode": "warm-reopen-same-UDF",
+        "private_bytes": 187052032.0,
+        "run": 19,
+        "launcher_ms": 2187.9182
+      }
+    ],
+    "excludes": "OS reboot/cache flush; indexing/conversion not implemented",
+    "resources": [
+      {
+        "tabs": 0,
+        "cpu_result": "MEASURED",
+        "idle_seconds": 60.768708,
+        "private_bytes": 191246336.0,
+        "process_set_stable": true,
+        "idle_cpu_percent": 0.023375684519370454,
+        "members": [
+          {
+            "private_bytes": 5545984,
+            "name": "toolbox-desktop",
+            "started_ticks": 639276549967372919,
+            "cpu_seconds": 0.359375,
+            "runtime_version": null,
+            "pid": 83928
+          },
+          {
+            "private_bytes": 65720320,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549971187367,
+            "cpu_seconds": 2.59375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 82004
+          },
+          {
+            "private_bytes": 3203072,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549973102610,
+            "cpu_seconds": 0.078125,
+            "runtime_version": "155.0.4283.45",
+            "pid": 70376
+          },
+          {
+            "private_bytes": 69632000,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549978423705,
+            "cpu_seconds": 0.625,
+            "runtime_version": "155.0.4283.45",
+            "pid": 72748
+          },
+          {
+            "private_bytes": 11939840,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549978599043,
+            "cpu_seconds": 0.359375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 69136
+          },
+          {
+            "private_bytes": 7577600,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549980336750,
+            "cpu_seconds": 0.109375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 83576
+          },
+          {
+            "private_bytes": 27627520,
+            "name": "msedgewebview2",
+            "started_ticks": 639276549980878305,
+            "cpu_seconds": 0.265625,
+            "runtime_version": "155.0.4283.45",
+            "pid": 68488
+          }
+        ]
+      },
+      {
+        "tabs": 1,
+        "cpu_result": "MEASURED",
+        "idle_seconds": 60.7850722,
+        "private_bytes": 227762176.0,
+        "process_set_stable": true,
+        "idle_cpu_percent": 0.02570533451398113,
+        "members": [
+          {
+            "private_bytes": 5578752,
+            "name": "toolbox-desktop",
+            "started_ticks": 639276550634208140,
+            "cpu_seconds": 0.390625,
+            "runtime_version": null,
+            "pid": 59668
+          },
+          {
+            "private_bytes": 74330112,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550638229412,
+            "cpu_seconds": 3.515625,
+            "runtime_version": "155.0.4283.45",
+            "pid": 56524
+          },
+          {
+            "private_bytes": 3203072,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550640030322,
+            "cpu_seconds": 0.078125,
+            "runtime_version": "155.0.4283.45",
+            "pid": 87096
+          },
+          {
+            "private_bytes": 74174464,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550644841311,
+            "cpu_seconds": 0.671875,
+            "runtime_version": "155.0.4283.45",
+            "pid": 85040
+          },
+          {
+            "private_bytes": 12718080,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550645014786,
+            "cpu_seconds": 0.5,
+            "runtime_version": "155.0.4283.45",
+            "pid": 57612
+          },
+          {
+            "private_bytes": 7680000,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550646750374,
+            "cpu_seconds": 0.09375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 69260
+          },
+          {
+            "private_bytes": 27295744,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550646918056,
+            "cpu_seconds": 0.328125,
+            "runtime_version": "155.0.4283.45",
+            "pid": 85712
+          },
+          {
+            "private_bytes": 22781952,
+            "name": "msedgewebview2",
+            "started_ticks": 639276550654317589,
+            "cpu_seconds": 0.140625,
+            "runtime_version": "155.0.4283.45",
+            "pid": 55012
+          }
+        ]
+      },
+      {
+        "tabs": 5,
+        "cpu_result": "MEASURED",
+        "idle_seconds": 60.8573201,
+        "private_bytes": 353681408.0,
+        "process_set_stable": true,
+        "idle_cpu_percent": 0.03851222854905267,
+        "members": [
+          {
+            "private_bytes": 5677056,
+            "name": "toolbox-desktop",
+            "started_ticks": 639276551308183819,
+            "cpu_seconds": 0.515625,
+            "runtime_version": null,
+            "pid": 68736
+          },
+          {
+            "private_bytes": 98013184,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551312036389,
+            "cpu_seconds": 4.984375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 66128
+          },
+          {
+            "private_bytes": 3198976,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551313897726,
+            "cpu_seconds": 0.109375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 54188
+          },
+          {
+            "private_bytes": 82120704,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551318816716,
+            "cpu_seconds": 0.921875,
+            "runtime_version": "155.0.4283.45",
+            "pid": 67040
+          },
+          {
+            "private_bytes": 13443072,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551318993120,
+            "cpu_seconds": 0.46875,
+            "runtime_version": "155.0.4283.45",
+            "pid": 57268
+          },
+          {
+            "private_bytes": 7856128,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551320661855,
+            "cpu_seconds": 0.078125,
+            "runtime_version": "155.0.4283.45",
+            "pid": 89924
+          },
+          {
+            "private_bytes": 27357184,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551320998013,
+            "cpu_seconds": 0.34375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 72776
+          },
+          {
+            "private_bytes": 22753280,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551328530608,
+            "cpu_seconds": 0.1875,
+            "runtime_version": "155.0.4283.45",
+            "pid": 71220
+          },
+          {
+            "private_bytes": 22581248,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551334371313,
+            "cpu_seconds": 0.234375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 80364
+          },
+          {
+            "private_bytes": 24969216,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551339692305,
+            "cpu_seconds": 0.140625,
+            "runtime_version": "155.0.4283.45",
+            "pid": 67656
+          },
+          {
+            "private_bytes": 22339584,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551344928980,
+            "cpu_seconds": 0.1875,
+            "runtime_version": "155.0.4283.45",
+            "pid": 64856
+          },
+          {
+            "private_bytes": 23371776,
+            "name": "msedgewebview2",
+            "started_ticks": 639276551350409869,
+            "cpu_seconds": 0.234375,
+            "runtime_version": "155.0.4283.45",
+            "pid": 84304
+          }
+        ]
+      }
+    ],
+    "warm_definition": "new process, same initialized UDF, reopen after prior process closes",
+    "cold_definition": "new process and fresh UDF; OS executable/file cache not flushed"
+  },
+  "stress": {
+    "browser": {
+      "observed_views": 10,
+      "observed_documents": 60,
+      "cookie_isolation": true,
+      "same_profile_sharing": true,
+      "remote_native_denied": true
+    },
+    "native": {
+      "attached_webviews": 1,
+      "close_recreate": 25,
+      "closed_children": true,
+      "download_verified": true,
+      "navigations": 25,
+      "one_window": true,
+      "operations": 100,
+      "page_loads": 61,
+      "peak_attached_webviews": 11,
+      "profile_strategy": "separate UDF per workspace; shared UDF/named profiles NOT VERIFIED",
+      "resizes": 25,
+      "status": "PASS",
+      "switches": 25,
+      "tabs": 10
+    }
+  },
+  "missing_runtime": {
+    "system_runtime_modified": false,
+    "mechanism": "process-local WebView2 loader override to empty fixture folder",
+    "observed_error": "WEBVIEW_INITIALIZATION_FAILED",
+    "exit_code": 101,
+    "result": "PASS"
+  },
+  "named_profiles": {
+    "tree": {
+      "cpu_seconds": 28.984375,
+      "private_bytes": 264744960.0,
+      "members": [
+        {
+          "private_bytes": 5947392,
+          "name": "toolbox-desktop",
+          "started_ticks": 639276547643868334,
+          "cpu_seconds": 1.734375,
+          "runtime_version": null,
+          "pid": 47028
+        },
+        {
+          "private_bytes": 107376640,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547647617439,
+          "cpu_seconds": 21.71875,
+          "runtime_version": "155.0.4283.45",
+          "pid": 81052
+        },
+        {
+          "private_bytes": 3571712,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547649633906,
+          "cpu_seconds": 0.09375,
+          "runtime_version": "155.0.4283.45",
+          "pid": 80668
+        },
+        {
+          "private_bytes": 96440320,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547654179053,
+          "cpu_seconds": 4.125,
+          "runtime_version": "155.0.4283.45",
+          "pid": 72052
+        },
+        {
+          "private_bytes": 14245888,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547654364113,
+          "cpu_seconds": 0.734375,
+          "runtime_version": "155.0.4283.45",
+          "pid": 84580
+        },
+        {
+          "private_bytes": 9211904,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547656105780,
+          "cpu_seconds": 0.203125,
+          "runtime_version": "155.0.4283.45",
+          "pid": 80372
+        },
+        {
+          "private_bytes": 27951104,
+          "name": "msedgewebview2",
+          "started_ticks": 639276547656443874,
+          "cpu_seconds": 0.375,
+          "runtime_version": "155.0.4283.45",
+          "pid": 61868
+        }
+      ]
+    },
+    "browser": {
+      "observed_views": 10,
+      "observed_documents": 60,
+      "cookie_isolation": true,
+      "same_profile_sharing": true,
+      "remote_native_denied": true
+    },
+    "native": {
+      "attached_webviews": 1,
+      "closed_children": true,
+      "download_verified": true,
+      "environment_source": "same main PlatformWebview.environment() COM object passed to every Wry child",
+      "native_children": 10,
+      "one_window": true,
+      "operations": 100,
+      "page_loads": 61,
+      "profile_strategy": "shared Shell UDF + Workspace_A / Workspace_B named Profiles",
+      "remaining_children": 0,
+      "shared_environment": true,
+      "status": "PASS",
+      "tabs": 10,
+      "udf_relative": "data/webview/shell"
+    }
+  },
+  "environment": {
+    "cpu": [
+      "Intel(R) Core(TM) Ultra 9 185H"
+    ],
+    "build": "26200",
+    "logical_processors": 22,
+    "memory_bytes": 33730662400,
+    "webview2_versions": [
+      "155.0.4283.45"
+    ],
+    "os": "Microsoft Windows 11 家庭版 中文版"
+  },
+  "portable-a-reopen": {
+    "observed_views": 5,
+    "observed_documents": 5,
+    "cookie_isolation": true,
+    "same_profile_sharing": true,
+    "remote_native_denied": true
+  },
+  "portable-a-first": {
+    "observed_views": 5,
+    "observed_documents": 5,
+    "cookie_isolation": true,
+    "same_profile_sharing": true,
+    "remote_native_denied": true
+  },
+  "readonly": {
+    "observed_error": "DATA_DIRECTORY_NOT_WRITABLE",
+    "fixture_acl_restored": true,
+    "exit_code": 2,
+    "result": "PASS"
+  },
+  "portable-b-first": {
+    "observed_views": 5,
+    "observed_documents": 5,
+    "cookie_isolation": true,
+    "same_profile_sharing": true,
+    "remote_native_denied": true
+  },
+  "execution_status": "PASS",
+  "gate_a": "AWAITING_OWNER_REVIEW",
+  "budgets": {
+    "warm_result": "FAIL",
+    "warm_launcher_p90_ms": 2158.7017,
+    "shell_memory_result": "PASS",
+    "shell_private_bytes": 191246336,
+    "cold_launcher_p90_ms": 2595.9806,
+    "idle_cpu_result": "PASS all measured groups; stable process sets",
+    "thresholds_changed": false,
+    "shell_target_bytes": 300000000,
+    "warm_target_ms": 2000,
+    "cold_result": "PASS for new-process/fresh-UDF definition; OS-cache cold NOT RUN",
+    "cold_target_ms": 3000
+  },
+  "shared_process_snapshot": {
+    "owned_processes": 12,
+    "webview2_browser_processes": 1,
+    "method": "owned descendant snapshot; count WebView2 browser processes without --type=; command lines not published",
+    "tabs": 5
+  }
+}
