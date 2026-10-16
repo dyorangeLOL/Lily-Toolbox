@@ -1,7 +1,7 @@
 {
   "identifier": "main-local",
-  "description": "Only local main frontend can check host health and acknowledge rendering.",
+  "description": "Only local main frontend can call the finite, validated core API and health commands.",
   "local": true,
   "windows": ["main"],
-  "permissions": ["allow-health-check", "allow-frontend-ready"]
+  "permissions": ["allow-health-check", "allow-frontend-ready", "allow-core-dispatch"]
 }
