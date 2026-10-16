@@ -6,6 +6,10 @@ publish.workspace = true
 
 [dependencies]
 serde.workspace = true
+serde_json.workspace = true
+rusqlite = { version = "=0.40.2", features = ["bundled"] }
+sha2 = "=0.10.9"
+semver = "=1.0.28"
 
 [dev-dependencies]
-serde_json.workspace = true
+tempfile = "3"
