@@ -132,6 +132,25 @@ impl From<False> for bool {
 }
 
 impl Response {
+    pub fn validate(&self) -> Result<(), AppError> {
+        let (id, version) = match self {
+            Self::Success {
+                request_id,
+                api_version,
+                ..
+            }
+            | Self::Failure {
+                request_id,
+                api_version,
+                ..
+            } => (request_id, api_version),
+        };
+        if valid_id(id) && *version == 1 {
+            Ok(())
+        } else {
+            Err(AppError::new("INVALID_REQUEST"))
+        }
+    }
     pub fn from_result(id: String, result: Result<Value, AppError>) -> Self {
         match result {
             Ok(data) => Self::Success {
@@ -208,6 +227,7 @@ impl Event {
         if self.schema_version == 1
             && valid_id(&self.event_id)
             && self.timestamp > 0
+            && self.timestamp <= 9_007_199_254_740_991
             && payload_valid
         {
             Ok(())

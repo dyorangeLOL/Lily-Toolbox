@@ -32,6 +32,14 @@ pub struct AppError {
     pub retryable: bool,
 }
 
+impl std::fmt::Display for AppError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.code)
+    }
+}
+
+impl std::error::Error for AppError {}
+
 impl AppError {
     pub fn new(code: &str) -> Self {
         let (message, retryable) = match code {

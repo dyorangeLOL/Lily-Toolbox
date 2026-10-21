@@ -39,10 +39,13 @@ fn shared_contracts_roundtrip_and_reject_invalid_vectors() {
     }
     for value in f["responses"].as_array().unwrap() {
         let r: Response = serde_json::from_value(value.clone()).unwrap();
+        r.validate().unwrap();
         assert_eq!(serde_json::to_value(r).unwrap(), *value);
     }
     for value in f["invalid_responses"].as_array().unwrap() {
-        assert!(serde_json::from_value::<Response>(value.clone()).is_err());
+        assert!(serde_json::from_value::<Response>(value.clone())
+            .and_then(|r| r.validate().map(|_| r).map_err(serde::de::Error::custom))
+            .is_err());
     }
     for value in f["events"].as_array().unwrap() {
         let e: Event = serde_json::from_value(value.clone()).unwrap();

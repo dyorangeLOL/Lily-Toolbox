@@ -79,6 +79,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             } else {
                 builder
             };
+            #[cfg(feature = "core-validation")]
+            let builder = if let Some(root) = std::env::var_os("TOOLBOX_CORE_TEST_ROOT") {
+                builder.data_directory(std::path::PathBuf::from(root).join("webview/shell"))
+            } else {
+                builder
+            };
             let window = builder.build();
             #[cfg(feature = "spike-web")]
             if window.is_err() {
