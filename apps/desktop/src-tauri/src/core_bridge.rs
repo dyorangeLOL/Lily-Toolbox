@@ -15,7 +15,6 @@ pub struct CoreState(Arc<Mutex<Option<CoreService>>>);
 pub async fn core_dispatch(
     window: tauri::WebviewWindow,
     app: tauri::AppHandle,
-    state: tauri::State<'_, CoreState>,
     request: serde_json::Value,
 ) -> Response {
     // Tauri ACL is the first layer; derive identity from the actual invoking
@@ -52,7 +51,9 @@ pub async fn core_dispatch(
     }
     let id = request.request_id.clone();
     let fallback_id = id.clone();
-    let core = Arc::clone(&state.0);
+    // Clone owned state before awaiting so no borrowed CommandArg crosses the
+    // async command boundary; the public response envelope remains unchanged.
+    let core = Arc::clone(&app.state::<CoreState>().0);
     // Opening/migrating/SQLite locking never blocks the UI thread; lazy first
     // use means no optional-domain work before the first rendered frame.
     tauri::async_runtime::spawn_blocking(move || {
