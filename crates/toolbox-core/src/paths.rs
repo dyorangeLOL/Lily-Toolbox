@@ -69,6 +69,12 @@ pub fn reject_links(path: &Path) -> Result<(), AppError> {
     let mut current = PathBuf::new();
     for part in path.components() {
         current.push(part);
+        // A Windows drive/device prefix is syntax, not a filesystem node.
+        // Inspect the volume root after RootDir is appended, then every real
+        // ancestor. Probing a bare verbatim prefix (\\?\C:) returns an error.
+        if matches!(part, Component::Prefix(_)) {
+            continue;
+        }
         match fs::symlink_metadata(&current) {
             Ok(meta) => {
                 #[cfg(windows)]

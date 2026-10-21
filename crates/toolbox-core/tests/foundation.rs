@@ -357,6 +357,22 @@ fn symlink_escape_and_loop_are_rejected() {
 
 #[cfg(windows)]
 #[test]
+fn windows_canonical_drive_prefix_preserves_valid_scope() {
+    let dir = tempfile::tempdir().unwrap();
+    let file = dir.path().join("normal.txt");
+    fs::write(&file, b"original").unwrap();
+    let canonical_root = fs::canonicalize(dir.path()).unwrap();
+    let canonical_file = fs::canonicalize(&file).unwrap();
+    assert!(DataPaths::at_root(&canonical_root).is_ok());
+    assert_eq!(
+        scoped_existing_path(&canonical_root, &file).unwrap(),
+        canonical_file
+    );
+    assert!(scoped_existing_path(dir.path(), &canonical_file).is_ok());
+}
+
+#[cfg(windows)]
+#[test]
 fn windows_junction_escape_is_rejected() {
     use std::os::windows::process::CommandExt;
     let dir = tempfile::tempdir().unwrap();
