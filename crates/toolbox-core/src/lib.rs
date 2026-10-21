@@ -1,5 +1,12 @@
 use serde::{Deserialize, Serialize};
 
+pub mod contracts;
+pub mod database;
+pub mod modules;
+pub mod paths;
+pub mod permissions;
+pub mod service;
+
 /// WF-01 health DTO only; WF-03 will add versioned domain contracts.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
@@ -25,7 +32,40 @@ pub struct AppError {
     pub retryable: bool,
 }
 
+impl std::fmt::Display for AppError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.code)
+    }
+}
+
+impl std::error::Error for AppError {}
+
 impl AppError {
+    pub fn new(code: &str) -> Self {
+        let (message, retryable) = match code {
+            "ACCESS_DENIED" => ("The caller or resource is not authorized", false),
+            "INVALID_REQUEST" => ("The command does not match API version 1", false),
+            "NOT_IMPLEMENTED" => ("This domain operation is not available yet", false),
+            "DATA_DIRECTORY_NOT_WRITABLE" => ("The selected data directory is not writable", false),
+            "MIGRATION_FAILED" => (
+                "Database migration failed; no pending migration was committed",
+                false,
+            ),
+            "SCHEMA_MISMATCH" => (
+                "Database version or migration checksum is unsupported",
+                false,
+            ),
+            "DATABASE_BUSY" => ("Database is busy; retry later", true),
+            "INVALID_DATA" => ("Stored data failed validation", false),
+            _ => ("Local storage operation failed", false),
+        };
+        Self {
+            code: code.into(),
+            message: message.into(),
+            retryable,
+        }
+    }
+
     pub fn diagnostic_failed() -> Self {
         Self {
             code: "DIAGNOSTIC_WRITE_FAILED".into(),

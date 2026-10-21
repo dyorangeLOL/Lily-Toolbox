@@ -24,7 +24,7 @@
 | WF-00 | verified | ADR-002/011/012/014；§13–15 | 两份基线已提交 | [PR #1](https://github.com/dyorangeLOL/Lily-Toolbox/pull/1)；[治理提交 997cb16](https://github.com/dyorangeLOL/Lily-Toolbox/commit/997cb1656f9f5da15d18f8b0e6d87de789024e9d) | Codex（本地检查与自审） | NOT RUN：未在 Codex Cloud/CI 运行 | NOT RUN：无应用；文档检查见下文 | 文档检查与 Codex 自审 PASS；PR 已整合；2026-10-14 |
 | WF-01 | verified | APP-007（骨架部分）；ADR-003/011/012 | WF-00 verified，PR #1/#2 已合并 | [PR #3](https://github.com/dyorangeLOL/Lily-Toolbox/pull/3)；d792ea5 | Codex（实际检查/自审） | 通用 CI 38584099171 PASS | Windows CI 38584099478 PASS；本机 Win11 启动/重开/20次采样 PASS | 骨架已验收；冷启动/完整CPU/业务功能未验收；2026-10-14 |
 | WF-02 | verified | WEB-010/007；SPIKE-PKG-01/PERF-01；§12 | WF-01 Windows 可启动，PR #3 已合并 | [PR #4](https://github.com/dyorangeLOL/Lily-Toolbox/pull/4)；d4ca638；ADR-017 | Codex（实际执行/自审） | 通用CI 38720390893、Windows CI 38720390888 PASS | 最终本机完整实验 PASS；20冷/20热/3资源组已记录；所述口径预算PASS | 2026-10-16所有者确认方案，Gate A pass；Windows证据/自审齐全 |
-| WF-03 | not-started | ADR-009/010/011；§6–8 | Gate A | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
+| WF-03 | in-progress | ADR-009/010/011；§6–8 | Gate A pass；PR #4已合并 | 独立PR待创建；wf03-core.md | Codex | 待CI | 本机Rust缺MSVC；待CI产物实测 | 统一契约/SQLite/权限基础；2026-10-16 |
 | WF-03.5 | not-started | ADR-003/005/010/011/014；§2/3/7–9/11/14–15 | WF-02 verified / Gate A pass + WF-03 verified | — | — | NOT RUN | NOT RUN | 不在本次执行范围；2026-10-14 |
 | WF-04 | not-started | APP-001/002/003（部分） | WF-03 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |
 | WF-05 | not-started | APP-004/005/006/007；INT-001 | WF-04 | — | — | NOT RUN | NOT RUN | 未到阶段；2026-10-14 |

@@ -4,6 +4,7 @@ use std::sync::{Mutex, OnceLock};
 use std::time::Instant;
 use tauri::{WebviewUrl, WebviewWindowBuilder};
 use toolbox_core::{AppError, HealthStatus};
+mod core_bridge;
 
 static STARTED: OnceLock<Instant> = OnceLock::new();
 
@@ -21,7 +22,10 @@ fn health_check() -> HealthStatus {
 }
 
 #[tauri::command]
-fn frontend_ready(state: tauri::State<'_, Readiness>) -> Result<(), AppError> {
+fn frontend_ready(
+    state: tauri::State<'_, Readiness>,
+    window: tauri::WebviewWindow,
+) -> Result<(), AppError> {
     let mut ready = state.0.lock().map_err(|_| AppError::diagnostic_failed())?;
     if *ready {
         return Ok(());
@@ -36,6 +40,10 @@ fn frontend_ready(state: tauri::State<'_, Readiness>) -> Result<(), AppError> {
         std::fs::write(path, report.to_string()).map_err(|_| AppError::diagnostic_failed())?;
     }
     *ready = true;
+    #[cfg(feature = "core-validation")]
+    core_bridge::maybe_probe(&window)?;
+    #[cfg(not(feature = "core-validation"))]
+    let _ = window;
     Ok(())
 }
 
@@ -45,7 +53,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let test_data = spike::prepare_data_directory()?;
     tauri::Builder::default()
         .manage(Readiness::default())
-        .invoke_handler(tauri::generate_handler![health_check, frontend_ready])
+        .manage(core_bridge::CoreState::default())
+        .invoke_handler(tauri::generate_handler![
+            health_check,
+            frontend_ready,
+            core_bridge::core_dispatch
+        ])
         .setup(move |app| {
             let builder =
                 WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
@@ -63,6 +76,12 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
             #[cfg(feature = "spike-web")]
             let builder = if let Some(path) = &test_data {
                 builder.data_directory(path.clone())
+            } else {
+                builder
+            };
+            #[cfg(feature = "core-validation")]
+            let builder = if let Some(root) = std::env::var_os("TOOLBOX_CORE_TEST_ROOT") {
+                builder.data_directory(std::path::PathBuf::from(root).join("webview/shell"))
             } else {
                 builder
             };

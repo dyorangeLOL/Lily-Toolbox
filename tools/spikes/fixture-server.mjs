@@ -21,7 +21,9 @@ if (!document.cookie.split(';').some(part => part.trim().startsWith('wf02_profil
 (async () => {
   let denied = true;
   if (window.__TAURI_INTERNALS__?.invoke) {
-    try { await window.__TAURI_INTERNALS__.invoke('health_check'); denied = false; } catch { denied = true; }
+    for (const [command,args] of [['health_check',{}],['core_dispatch',{request:{request_id:'remote-1',api_version:1,caller_context:{module_id:'toolbox.shell'},params:{command:'modules.list',args:{}}}}]]) {
+      try { await window.__TAURI_INTERNALS__.invoke(command,args); denied = false; } catch { /* denied by native ACL */ }
+    }
   }
   await fetch('/seen', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({run:params.get('run'),slot:Number(params.get('slot')),profile,before,after:document.cookie,nativeDenied:denied,width:innerWidth,height:innerHeight})});
 })();
