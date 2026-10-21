@@ -53,6 +53,9 @@ jobs:
         if: always()
         with:
           name: wf03-windows-x64
+          # The allowlist below contains binaries and sanitized reports only.
+          # Include the .artifacts parent; never upload UDF or database folders.
+          include-hidden-files: true
           path: |
             target/release/toolbox-desktop.exe
             target/release/examples/wf03_probe.exe
